@@ -1,0 +1,10 @@
+target/
+.git
+.gitignore
+.dockerignore
+.env
+README.md
+*.sql
+*.docx
+*.pdf
+pom.xml.bak
