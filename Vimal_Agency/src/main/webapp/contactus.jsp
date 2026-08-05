@@ -157,7 +157,6 @@ if("POST".equalsIgnoreCase(request.getMethod())) {
     String message=request.getParameter("message");
 
     try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
         Connection cn=DatabaseManager.getConnection();
         PreparedStatement st=cn.prepareStatement("INSERT INTO contact_us(name,email,cno,message) VALUES(?,?,?,?)");
         st.setString(1,name);

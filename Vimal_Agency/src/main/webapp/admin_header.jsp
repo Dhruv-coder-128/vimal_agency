@@ -15,7 +15,6 @@
         ResultSet hRs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             hCon = DatabaseManager.getConnection();
             
             String hQuery = "SELECT COUNT(*) FROM orders WHERE status = 'Pending'";

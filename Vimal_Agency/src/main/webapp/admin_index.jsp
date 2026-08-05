@@ -138,7 +138,6 @@
             String[] weeklyCustomers = new String[7]; 
             
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
                 con = DatabaseManager.getConnection();
                 
                 ResultSet rs;

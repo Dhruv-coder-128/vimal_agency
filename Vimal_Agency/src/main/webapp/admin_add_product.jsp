@@ -91,7 +91,6 @@
                     // ------------------------------------------------------
                     // Load MySQL JDBC Driver
                     // ------------------------------------------------------
-                    Class.forName("com.mysql.cj.jdbc.Driver");
 
                     // Establish database connection with Unicode support
                     Connection con = DatabaseManager.getConnection();

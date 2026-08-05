@@ -126,7 +126,6 @@
         <div class="ticker-wrap">
             <%
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
                     Connection cn=DatabaseManager.getConnection();
                     ResultSet rs=cn.createStatement().executeQuery("SELECT offer_text FROM offers WHERE is_active=1");
                     while(rs.next()){
@@ -170,7 +169,6 @@
 <div class="row g-4">
             <%
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
                     Connection conHome = DatabaseManager.getConnection();
                     
                     // અહીં તમારી પસંદગીની 4 પ્રોડક્ટના નામ લખો

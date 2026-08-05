@@ -45,7 +45,6 @@
             int ship = Integer.parseInt(request.getParameter("shipping"));
             int total = Integer.parseInt(request.getParameter("final_total"));
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DatabaseManager.getConnection();
             
             // 1. Order insert karo ane Order ID melvo

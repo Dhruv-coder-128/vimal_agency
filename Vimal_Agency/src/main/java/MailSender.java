@@ -7,8 +7,8 @@ import javax.mail.internet.*;
 public class MailSender {
 
     // Mail Details
-    private static final String SENDER_EMAIL = "vimalagency.noreply@gmail.com";
-    private static final String APP_PASSWORD = "Vimal@111"; // Mail app password
+    private static final String SENDER_EMAIL = System.getenv("SMTP_USER");
+    private static final String APP_PASSWORD = System.getenv("SMTP_PASSWORD");
 
     public static boolean sendInvoiceMail(String toEmail, String orderId, String customerName) {
         
@@ -16,8 +16,8 @@ public class MailSender {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.host", System.getenv("SMTP_HOST"));
+        props.put("mail.smtp.port", System.getenv("SMTP_PORT"));
 
         // Create a mail session with authentication
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {

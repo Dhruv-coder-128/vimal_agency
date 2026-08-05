@@ -195,7 +195,6 @@
     Map<String, List<Product>> categoryMap = new LinkedHashMap<>();
 
     try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
         cn = DatabaseManager.getConnection();
 
         // 👉 STRICT ORDER BY listing_code ASC

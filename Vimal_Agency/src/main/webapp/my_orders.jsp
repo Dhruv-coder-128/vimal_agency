@@ -255,7 +255,6 @@
     <%
         try {
             int u_id = (Integer)session.getAttribute("user_id");
-            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DatabaseManager.getConnection();
             
             // Cancel Order Logic

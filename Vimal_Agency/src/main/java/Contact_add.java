@@ -33,7 +33,6 @@ public class Contact_add extends HttpServlet
         try {
 
             // 🔹 Load Driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
 
             // 🔹 Connection
             cn = DatabaseManager.getConnection();

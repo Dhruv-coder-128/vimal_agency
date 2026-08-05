@@ -323,7 +323,6 @@ String uname = (String)session.getAttribute("username");
                     <%
                         int cartCount = 0;
                         try {
-                            Class.forName("com.mysql.cj.jdbc.Driver");
                             Connection conCount = DatabaseManager.getConnection();
                             Integer u_id = (Integer)session.getAttribute("user_id");
                             if(u_id != null) {

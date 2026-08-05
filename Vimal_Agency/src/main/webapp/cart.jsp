@@ -163,7 +163,6 @@
                 double discount = 0;
 
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
                     Connection con = DatabaseManager.getConnection();
                     String sql = "SELECT c.*, p.product_category FROM cart c JOIN products p ON c.product_name = p.product_name WHERE c.user_id = ?";
                     PreparedStatement ps = con.prepareStatement(sql);

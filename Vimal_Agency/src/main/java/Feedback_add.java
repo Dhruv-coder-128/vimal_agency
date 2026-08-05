@@ -25,7 +25,6 @@ public class Feedback_add extends HttpServlet
 
         try {
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
 
             cn = DatabaseManager.getConnection();
 

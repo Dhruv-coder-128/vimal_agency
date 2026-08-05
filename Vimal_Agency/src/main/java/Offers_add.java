@@ -16,7 +16,6 @@ public class Offers_add extends HttpServlet
 
         try
         {
-            Class.forName("com.mysql.jdbc.Driver");
 
             Connection con = DatabaseManager.getConnection();
 

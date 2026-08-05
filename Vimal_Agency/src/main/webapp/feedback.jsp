@@ -81,7 +81,6 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
     PreparedStatement st = null;
 
     try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
         // UTF-8 Connection
         cn = DatabaseManager.getConnection();
         st = cn.prepareStatement("INSERT INTO feedback (name, mail, experience, message) VALUES (?, ?, ?, ?)");

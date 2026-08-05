@@ -43,7 +43,6 @@
             // ======================================================
 
             // Load MySQL JDBC Driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Establish connection with database
             con = DatabaseManager.getConnection();
