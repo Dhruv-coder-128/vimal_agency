@@ -50,7 +50,7 @@
             // 1. INSERT NEW USER LOGIC
             if(request.getMethod().equalsIgnoreCase("POST") && "add_user".equals(request.getParameter("action"))) {
                 try {
-                    String sql = "INSERT INTO users (username, email, password, role, status, created_at) VALUES (?, ?, ?, ?, 1, NOW())";
+                    String sql = "INSERT INTO users (username, email, password, role, status, created_at) VALUES (?, ?, ?, ?, 1, CURRENT_TIMESTAMP)";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setString(1, request.getParameter("username"));
                     ps.setString(2, request.getParameter("email"));

@@ -31,7 +31,7 @@ public class UserDAO {
             // Insert user
             String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
             try (PreparedStatement ins = cn.prepareStatement(
-                    "INSERT INTO users(username, email, password, role, status, created_at) VALUES(?, ?, ?, 'user', 1, NOW())")) {
+                    "INSERT INTO users(username, email, password, role, status, created_at) VALUES(?, ?, ?, 'user', 1, CURRENT_TIMESTAMP)")) {
                 ins.setString(1, username);
                 ins.setString(2, email);
                 ins.setString(3, hashed);

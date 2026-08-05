@@ -1,0 +1,89 @@
+-- PostgreSQL Schema for Vimal Agency (Migrated from MySQL)
+
+CREATE TABLE cart (
+  cart_id SERIAL PRIMARY KEY,
+  user_id INTEGER DEFAULT NULL,
+  product_id INTEGER DEFAULT NULL,
+  product_name VARCHAR(100) DEFAULT NULL,
+  price INTEGER DEFAULT NULL,
+  qty INTEGER DEFAULT NULL,
+  image VARCHAR(200) DEFAULT NULL
+);
+
+CREATE TABLE contact_us (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  cno VARCHAR(20) NOT NULL,
+  message VARCHAR(500) NOT NULL,
+  created_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE feedback (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  mail VARCHAR(150) NOT NULL,
+  experience INTEGER NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE offers (
+  id SERIAL PRIMARY KEY,
+  offer_text VARCHAR(1000) NOT NULL,
+  is_active SMALLINT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE orders (
+  order_id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  customer_name VARCHAR(100) DEFAULT NULL,
+  address TEXT DEFAULT NULL,
+  city VARCHAR(50) DEFAULT NULL,
+  pincode VARCHAR(10) DEFAULT NULL,
+  phone VARCHAR(15) DEFAULT NULL,
+  subtotal INTEGER DEFAULT NULL,
+  discount INTEGER DEFAULT NULL,
+  shipping INTEGER DEFAULT NULL,
+  final_total INTEGER DEFAULT NULL,
+  status VARCHAR(20) DEFAULT 'Pending',
+  order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+  item_id SERIAL PRIMARY KEY,
+  order_id INTEGER DEFAULT NULL,
+  product_name VARCHAR(100) DEFAULT NULL,
+  price INTEGER DEFAULT NULL,
+  qty INTEGER DEFAULT NULL,
+  image VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE products (
+  listing_code INTEGER PRIMARY KEY, -- Not serial according to MySQL schema
+  code VARCHAR(20) DEFAULT NULL,
+  product_name VARCHAR(255) DEFAULT NULL,
+  product_price INTEGER DEFAULT NULL,
+  product_category VARCHAR(100) DEFAULT NULL,
+  product_describe TEXT DEFAULT NULL,
+  product_image VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE promo (
+  id SERIAL PRIMARY KEY,
+  code_name VARCHAR(50) NOT NULL UNIQUE,
+  discount_percentage INTEGER NOT NULL,
+  description VARCHAR(255) DEFAULT NULL,
+  category_name VARCHAR(100) DEFAULT NULL,
+  min_order_amount INTEGER DEFAULT 0
+);
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(20) DEFAULT 'user',
+  status SMALLINT DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

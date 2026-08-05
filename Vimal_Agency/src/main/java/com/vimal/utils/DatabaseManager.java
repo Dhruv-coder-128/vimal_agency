@@ -12,18 +12,22 @@ public class DatabaseManager {
 
     static {
         try {
-            // Load MySQL JDBC driver (optional in newer JDBC but good for legacy safety)
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Load PostgreSQL JDBC driver
+            Class.forName("org.postgresql.Driver");
             
             HikariConfig config = new HikariConfig();
             
-            String dbHost = getEnvOrDefault("DB_HOST", "localhost");
-            String dbPort = getEnvOrDefault("DB_PORT", "3306");
-            String dbName = getEnvOrDefault("DB_NAME", "vimal_agency");
-            String dbUser = getEnvOrDefault("DB_USER", "root");
-            String dbPassword = getEnvOrDefault("DB_PASSWORD", "");
+            String jdbcUrl = getEnvOrDefault("SUPABASE_JDBC_URL", "");
+            if (jdbcUrl.isEmpty()) {
+                String dbHost = getEnvOrDefault("SUPABASE_DB_HOST", "localhost");
+                String dbPort = getEnvOrDefault("SUPABASE_DB_PORT", "5432");
+                String dbName = getEnvOrDefault("SUPABASE_DB_NAME", "postgres");
+                String sslMode = getEnvOrDefault("SUPABASE_DB_SSL", "require");
+                jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?sslmode=%s", dbHost, dbPort, dbName, sslMode);
+            }
             
-            String jdbcUrl = String.format("jdbc:mysql://%s:%s/%s?useUnicode=yes&characterEncoding=UTF-8", dbHost, dbPort, dbName);
+            String dbUser = getEnvOrDefault("SUPABASE_DB_USER", "postgres");
+            String dbPassword = getEnvOrDefault("SUPABASE_DB_PASSWORD", "");
             
             config.setJdbcUrl(jdbcUrl);
             config.setUsername(dbUser);

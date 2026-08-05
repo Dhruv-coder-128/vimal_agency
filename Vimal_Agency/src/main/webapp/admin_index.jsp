@@ -160,7 +160,7 @@
                     String dateStr = sqlDayFmt.format(cal.getTime());
                     weeklyDays[6-i] = labelDayFmt.format(cal.getTime());
                     
-                    String salesQuery = "SELECT SUM(final_total), GROUP_CONCAT(CONCAT(customer_name, '::', final_total) SEPARATOR '|') FROM orders WHERE status='Delivered' AND DATE(order_date) = '" + dateStr + "'";
+                    String salesQuery = "SELECT SUM(final_total), STRING_AGG(CONCAT(customer_name, '::', final_total), '|') FROM orders WHERE status='Delivered' AND CAST(order_date AS DATE) = '" + dateStr + "'";
                     Statement stSales = con.createStatement();
                     ResultSet rsSales = stSales.executeQuery(salesQuery);
                     
