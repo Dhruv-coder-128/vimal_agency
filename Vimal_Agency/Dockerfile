@@ -15,5 +15,8 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Copy the built WAR file to Tomcat webapps directory as ROOT.war
 COPY --from=build /app/target/vimal-agency.war /usr/local/tomcat/webapps/ROOT.war
 
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
+# Render provides the PORT environment variable
+ENV PORT=8080
+
+# Modify Tomcat server.xml to use the PORT environment variable before starting
+CMD sed -i "s/port=\"8080\"/port=\"${PORT}\"/g" /usr/local/tomcat/conf/server.xml && catalina.sh run
