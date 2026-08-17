@@ -54,7 +54,19 @@ public class UserDAO {
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     String storedHash = rs.getString("password");
-                    return BCrypt.checkpw(password, storedHash);
+                    if (storedHash == null || password == null) {
+                        return false;
+                    }
+                    if (storedHash.startsWith("$2a$") || storedHash.startsWith("$2b$") || storedHash.startsWith("$2y$")) {
+                        try {
+                            return BCrypt.checkpw(password, storedHash);
+                        } catch (Exception ex) {
+                            return password.equals(storedHash);
+                        }
+                    } else {
+                        // Plaintext comparison for pre-existing seed data
+                        return password.equals(storedHash);
+                    }
                 }
             }
         }

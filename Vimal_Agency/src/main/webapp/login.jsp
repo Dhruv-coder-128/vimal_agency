@@ -1,18 +1,46 @@
 <%@ page import="java.sql.*" %>
-    <%@ page import="com.vimal.utils.DatabaseManager" %>
+<%@ page import="com.vimal.utils.DatabaseManager" %>
 
-        <% String error="" ; if(request.getMethod().equalsIgnoreCase("POST")){ String
-            email=request.getParameter("email"); String password=request.getParameter("password"); try { boolean
-            isValid=com.vimal.dao.UserDAO.validateLogin(email, password); if(isValid) { // Fetch user role for session
-            try (java.sql.Connection conn=com.vimal.utils.DatabaseManager.getConnection(); java.sql.PreparedStatement
-            ps=conn.prepareStatement("SELECT * FROM users WHERE (email=? OR username=?) AND status=1")) {
-            ps.setString(1, email); ps.setString(2, email); try (java.sql.ResultSet rs=ps.executeQuery()) { if
-            (rs.next()) { session.setAttribute("user", rs.getString("username")); session.setAttribute("role",
-            rs.getString("role")); session.setAttribute("uid", rs.getString("id"));
-            if(rs.getString("role").equals("admin")){ response.sendRedirect("admin/admin_index.jsp"); }else{
-            response.sendRedirect("index.jsp"); } return; } } } } else {
-            error="Your login attempt has failed. Make sure the username and password are correct." ; } }
-            catch(Exception e) { error="Database error occurred!" ; e.printStackTrace(); } } %>
+<%
+    String error = "";
+    if (request.getMethod().equalsIgnoreCase("POST")) {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        try {
+            boolean isValid = com.vimal.dao.UserDAO.validateLogin(email, password);
+            if (isValid) {
+                try (java.sql.Connection conn = com.vimal.utils.DatabaseManager.getConnection();
+                     java.sql.PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE (email=? OR username=?) AND status=1")) {
+                    ps.setString(1, email);
+                    ps.setString(2, email);
+                    try (java.sql.ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            session.setAttribute("user", rs.getString("username"));
+                            session.setAttribute("username", rs.getString("username"));
+                            session.setAttribute("role", rs.getString("role"));
+                            session.setAttribute("uid", rs.getString("id"));
+                            session.setAttribute("user_id", rs.getInt("id"));
+
+                            if ("admin".equalsIgnoreCase(rs.getString("role"))) {
+                                session.setAttribute("admin_id", rs.getInt("id"));
+                                session.setAttribute("admin_email", rs.getString("email"));
+                                response.sendRedirect("admin_index.jsp");
+                            } else {
+                                response.sendRedirect("index.jsp");
+                            }
+                            return;
+                        }
+                    }
+                }
+            } else {
+                error = "Your login attempt has failed. Make sure the username and password are correct.";
+            }
+        } catch (Exception e) {
+            error = "Database error occurred: " + e.getMessage();
+            e.printStackTrace();
+        }
+    }
+%>
 
             <!DOCTYPE html>
             <html>
