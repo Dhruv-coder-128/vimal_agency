@@ -6,11 +6,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_NAME=vimal_agency
-      - DB_USER=root
-      - DB_PASSWORD=rootpassword
+      - SUPABASE_DB_HOST=db
+      - SUPABASE_DB_PORT=5432
+      - SUPABASE_DB_NAME=postgres
+      - SUPABASE_DB_USER=postgres
+      - SUPABASE_DB_PASSWORD=postgres
+      - SUPABASE_DB_SSL=disable
     depends_on:
       db:
         condition: service_healthy
@@ -18,18 +19,19 @@ services:
       - app-network
 
   db:
-    image: mysql:8.3
+    image: postgres:15-alpine
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=vimal_agency
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - db_data:/var/lib/mysql
-      # Uncomment to seed initial data
-      # - ./vimal_agency.sql:/docker-entrypoint-initdb.d/init.sql
+      - pg_data:/var/lib/postgresql/data
+      - ./supabase_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./supabase_seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,7 +39,7 @@ services:
       - app-network
 
 volumes:
-  db_data:
+  pg_data:
 
 networks:
   app-network:

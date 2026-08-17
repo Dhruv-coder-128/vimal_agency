@@ -5,6 +5,8 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <display-name>Vimal Agency</display-name>
+
     <!-- Static Resource Caching (Performance) -->
     <filter>
         <filter-name>ExpiresFilter</filter-name>
@@ -28,128 +30,9 @@
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
 
-    <!-- Contact Add -->
-    <servlet>
-        <servlet-name>Contact_add</servlet-name>
-        <servlet-class>Contact_add</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>Contact_add</servlet-name>
-        <url-pattern>/Contact_add</url-pattern>
-    </servlet-mapping>
-
-
-    <!-- Login Servlet Mapping Removed as class loginproc doesn't exist (handled via JSP) -->
-
-    <!-- Feedback Add -->
-    <servlet>
-        <servlet-name>Feedback_add</servlet-name>
-        <servlet-class>Feedback_add</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>Feedback_add</servlet-name>
-        <url-pattern>/Feedback_add</url-pattern>
-    </servlet-mapping>
-
-
-    <!-- Contact Add ADMIN -->
-    <servlet-mapping>
-        <servlet-name>Contact_add</servlet-name>
-        <url-pattern>/admin/Contact_add</url-pattern>
-    </servlet-mapping>
-
-
-    <!-- Contact Save ADMIN Servlet Mapping Removed as class Contact_save doesn't exist -->
     <!-- Welcome Page -->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-    <servlet>
-   <servlet-name>Offers_add</servlet-name>
-   <servlet-class>Offers_add</servlet-class>
-</servlet>
-
-<servlet-mapping>
-   <servlet-name>Offers_add</servlet-name>
-   <url-pattern>/Offers_add</url-pattern>
-</servlet-mapping>
-
-
 </web-app>
-
-
-
-
-
-
-
-
-
-<!-- <?xml version="1.0" encoding="UTF-8"?>
-<web-app>
-   <servlet>
-        <servlet-name>Contact_add</servlet-name>
-        <servlet-class>Contact_add</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Contact_add</servlet-name>
-        <url-pattern>/Contact_add</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>loginproc</servlet-name>
-        <servlet-class>loginproc</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>loginproc</servlet-name>
-        <url-pattern>/admin/loginproc</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Contact_view</servlet-name>
-        <servlet-class>Contact_view</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Contact_view</servlet-name>
-        <url-pattern>/admin/Contact_view</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Student_view</servlet-name>
-        <servlet-class>Student_view</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Student_view</servlet-name>
-        <url-pattern>/Student_view</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Feedback_add</servlet-name>
-        <servlet-class>Feedback_add</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Feedback_add</servlet-name>
-        <url-pattern>/Feedback_add</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Contact_add</servlet-name>
-        <servlet-class>Contact_add</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Contact_add</servlet-name>
-        <url-pattern>/admin/Contact_add</url-pattern>
-    </servlet-mapping>
-        <servlet>
-        <servlet-name>Contact_save</servlet-name>
-        <servlet-class>Contact_save</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Contact_save</servlet-name>
-        <url-pattern>/admin/Contact_save</url-pattern>
-    </servlet-mapping>
-
-</web-app> -->

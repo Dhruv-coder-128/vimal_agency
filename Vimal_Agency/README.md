@@ -1,16 +1,34 @@
 # Vimal Agency Web Application
 
-This repository contains the legacy Java JSP + Servlet + MySQL web application, fully transformed into a production-ready application.
+Production-ready Java JSP + Servlet web application migrated to **Supabase PostgreSQL** and **Render** cloud deployment.
 
-## Features Added
+---
 
-* **Maven Build System**: Standard directory structure and dependency management.
-* **Database Connection Pooling**: HikariCP handles MySQL connections efficiently.
-* **Environment Variables**: No hardcoded credentials. All configuration is done via environment variables.
-* **Docker Support**: Containerized web application and database.
-* **CI/CD pipeline**: GitHub Actions workflow.
+## 🌟 Features
 
-## Running Locally with Docker
+* **Runtime**: Java 8 / Apache Tomcat 9
+* **Database Engine**: Supabase PostgreSQL 15+ (PostgreSQL JDBC Driver + HikariCP Connection Pooling)
+* **Security & Authentication**: BCrypt salted hashing (`jbcrypt`) with transparent legacy plaintext auto-upgrading
+* **Build System**: Apache Maven with multi-stage Docker build
+* **Cloud Ready**: Render Infrastructure-as-Code (`render.yaml`), dynamic `$PORT` Tomcat integration
+
+---
+
+## ⚙️ Environment Variables
+
+| Variable | Description | Default / Example |
+|---|---|---|
+| `SUPABASE_DB_HOST` | Database Hostname | `db.xxxxxxxxxxxx.supabase.co` |
+| `SUPABASE_DB_PORT` | Database Port | `5432` / `6543` |
+| `SUPABASE_DB_NAME` | Database Name | `postgres` |
+| `SUPABASE_DB_USER` | Database User | `postgres` |
+| `SUPABASE_DB_PASSWORD` | Database Password | `your_db_password` |
+| `SUPABASE_DB_SSL` | SSL Mode | `require` |
+| `SUPABASE_JDBC_URL` | *(Optional direct URL)* | `jdbc:postgresql://...` |
+
+---
+
+## 🚀 Running Locally with Docker
 
 1. Ensure Docker and Docker Compose are installed.
 2. Copy `.env.example` to `.env` and adjust variables if needed.
@@ -19,25 +37,6 @@ This repository contains the legacy Java JSP + Servlet + MySQL web application, 
    docker-compose up -d --build
    ```
 4. Access the application at `http://localhost:8080`.
-
-## Environment Variables required
-
-| Variable | Description | Default |
-| -------- | ----------- | ------- |
-| `DB_HOST` | Database Host | localhost |
-| `DB_PORT` | Database Port | 3306 |
-| `DB_NAME` | Database Name | vimal_agency |
-| `DB_USER` | Database User | root |
-| `DB_PASSWORD` | Database Password | (empty) |
-
-## Deployment Instructions
-
-### Platform as a Service (PaaS) - Railway / Render / Koyeb
-
-1. **Database**: Provision a managed MySQL database on the platform.
-2. **Web App**: Create a new Web Service and link this repository.
-3. **Environment**: Add the environment variables listed above to the service settings.
-4. **Build**: The platforms will automatically detect the Dockerfile and deploy the application.
 
 ### AWS / Google Cloud / Azure
 

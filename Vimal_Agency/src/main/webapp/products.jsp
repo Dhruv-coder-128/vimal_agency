@@ -1,9 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.util.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 
 <%
     // 👉 STEP 1: USER SESSION CHECK

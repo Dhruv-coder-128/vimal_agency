@@ -278,13 +278,11 @@
                     <div>
                         <ul class="nav-list">
                             <li class="nav-link">
-                                <a class="<%= pageName.equals(" index.jsp") ? "nav-active" : "" %>"
-                                    href="index.jsp">Home</a>
+                                <a class="<%= pageName.equals("index.jsp") ? "nav-active" : "" %>" href="index.jsp">Home</a>
                             </li>
                             <li class="nav-link">
                                 <div class="dropdown">
-                                    <a href="products.jsp" class="dropbtn <%= pageName.equals(" products.jsp")
-                                        ? "nav-active" : "" %>">Product</a>
+                                    <a href="products.jsp" class="dropbtn <%= pageName.equals("products.jsp") ? "nav-active" : "" %>">Product</a>
                                     <div class="dropdown-content">
                                         <a href="products.jsp#Wafers">Wafer</a>
                                         <a href="products.jsp#Western_Snacks">Western Snacks</a>
@@ -296,44 +294,42 @@
                                         <a href="products.jsp#Confectionary">Confectionary</a>
                                         <a href="products.jsp#Gippi">Gippi Noodles</a>
                                         <a href="products.jsp#Olee">Olee</a>
-
-                                        <!-- <div class="dropdown-content">
-                    <a href="products.jsp#Wafers"><i class="fa-solid fa-cookie me-2"></i> Wafer</a>
-                    <a href="products.jsp#Western_Snacks"><i class="fa-solid fa-bowl-food me-2"></i> Western Snacks</a>
-                    <a href="products.jsp#Snack_Pellets"><i class="fa-solid fa-stroopwafel me-2"></i> Snack Pellets</a>
-                    <a href="products.jsp#Namkeen"><i class="fa-solid fa-seedling me-2"></i> Namkeen</a>
-                    <a href="products.jsp#Peantus"><i class="fa-solid fa-nut me-2"></i> Peanuts</a>
-                    <a href="products.jsp#Khakhra"><i class="fa-solid fa-bread-slice me-2"></i> Khakhra</a>
-                    <a href="products.jsp#Chocalate"><i class="fa-solid fa-ice-cream me-2"></i> Wafer Biscuit</a>
-                    <a href="products.jsp#Confectionary"><i class="fa-solid fa-candy-cane me-2"></i> Confectionary</a>
-                    <a href="products.jsp#Gippi"><i class="fa-solid fa-bowl-rice me-2"></i> Gippi Noodles</a>
-                    <a href="products.jsp#Olee"><i class="fa-solid fa-circle me-2"></i> Olee</a> -->
                                     </div>
                                 </div>
                             </li>
 
-
-                            <li class="nav-link"><a class="<%= pageName.equals(" feedback.jsp") ? "nav-active" : "" %>"
-                                    href="feedback.jsp">Feedback</a></li>
-                            <li class="nav-link"><a class="<%= pageName.equals(" about-us.jsp") ? "nav-active" : "" %>"
-                                    href="about-us.jsp">About Us</a></li>
-                            <li class="nav-link"><a class="<%= pageName.equals(" contactus.jsp") ? "nav-active" : "" %>"
-                                    href="contactus.jsp">Contact Us</a></li>
+                            <li class="nav-link"><a class="<%= pageName.equals("feedback.jsp") ? "nav-active" : "" %>" href="feedback.jsp">Feedback</a></li>
+                            <li class="nav-link"><a class="<%= pageName.equals("about-us.jsp") ? "nav-active" : "" %>" href="about-us.jsp">About Us</a></li>
+                            <li class="nav-link"><a class="<%= pageName.equals("contactus.jsp") ? "nav-active" : "" %>" href="contactus.jsp">Contact Us</a></li>
 
                             <li class="nav-link">
                                 <a href="cart.jsp" class="cart-container">
                                     <i class="fa-solid fa-cart-shopping"></i>
-                                    <% int cartCount=0; try { Connection conCount=DatabaseManager.getConnection();
-                                        Integer u_id=(Integer)session.getAttribute("user_id"); if(u_id !=null) {
-                                        PreparedStatement psCount=conCount.prepareStatement("SELECT SUM(qty) FROM cart
-                                        WHERE user_id=?"); psCount.setInt(1, u_id); ResultSet
-                                        rsCount=psCount.executeQuery(); if(rsCount.next()){ cartCount=rsCount.getInt(1);
-                                        } } conCount.close(); } catch(Exception e) {} %>
-                                        <% if(cartCount> 0) { %>
-                                            <span class="cart-badge">
-                                                <%= cartCount %>
-                                            </span>
-                                            <% } %>
+                                    <%
+                                        int cartCount = 0;
+                                        try {
+                                            Connection conCount = DatabaseManager.getConnection();
+                                            Integer u_id = null;
+                                            Object uObj = session.getAttribute("user_id");
+                                            if (uObj == null) uObj = session.getAttribute("uid");
+                                            if (uObj != null) {
+                                                u_id = (uObj instanceof Integer) ? (Integer) uObj : Integer.parseInt(uObj.toString());
+                                            }
+                                            if (u_id != null) {
+                                                PreparedStatement psCount = conCount.prepareStatement("SELECT SUM(qty) FROM cart WHERE user_id=?");
+                                                psCount.setInt(1, u_id);
+                                                ResultSet rsCount = psCount.executeQuery();
+                                                if (rsCount.next()) {
+                                                    cartCount = rsCount.getInt(1);
+                                                }
+                                                psCount.close();
+                                            }
+                                            conCount.close();
+                                        } catch(Exception e) {}
+                                    %>
+                                    <% if(cartCount > 0) { %>
+                                        <span class="cart-badge"><%= cartCount %></span>
+                                    <% } %>
                                 </a>
                             </li>
 

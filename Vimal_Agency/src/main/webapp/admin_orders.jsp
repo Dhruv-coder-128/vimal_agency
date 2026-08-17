@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 
 <%
     // 👉 STEP 1: STRICT ADMIN SESSION LOCKDOWN
@@ -10,17 +9,19 @@
         return; 
     }
 
-    // 👉 AJAX HANDLE (એક જ ફાઈલમાં બેકએન્ડ પ્રોસેસ)
+    // 👉 AJAX HANDLE
     if(request.getMethod().equalsIgnoreCase("POST") && "ajax_update_status".equals(request.getParameter("action"))) {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try {
             Connection con = DatabaseManager.getConnection();
+            int oId = Integer.parseInt(request.getParameter("order_id"));
             String sql = "UPDATE orders SET status=? WHERE order_id=?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, request.getParameter("new_status"));
-            ps.setString(2, request.getParameter("order_id"));
+            ps.setInt(2, oId);
             int rows = ps.executeUpdate();
+            ps.close();
             con.close();
             
             if(rows > 0) {

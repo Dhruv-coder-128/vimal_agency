@@ -1,6 +1,6 @@
 # Hostinger Tomcat Deployment Guide
 
-Hostinger provides reliable VPS hosting, which is perfect for traditional Java applications running on Tomcat.
+Guide for deploying Vimal Agency on a Hostinger Ubuntu VPS with Tomcat 9 and Supabase PostgreSQL.
 
 ## Steps to Deploy
 
@@ -11,26 +11,24 @@ Hostinger provides reliable VPS hosting, which is perfect for traditional Java a
      sudo apt update
      sudo apt install openjdk-8-jdk tomcat9 tomcat9-admin
      ```
-2. **Install MySQL**:
-   - Install MySQL server on the VPS:
-     ```bash
-     sudo apt install mysql-server
-     ```
-   - Create the `vimal_agency` database and user.
-3. **Configure Environment Variables**:
+
+2. **Configure Environment Variables**:
    - Open Tomcat's service configuration file:
      ```bash
      sudo nano /etc/systemd/system/multi-user.target.wants/tomcat9.service
      ```
-   - Add the following environment variables under `[Service]`:
+   - Add the Supabase environment variables under `[Service]`:
      ```ini
-     Environment="DB_HOST=localhost"
-     Environment="DB_PORT=3306"
-     Environment="DB_NAME=vimal_agency"
-     Environment="DB_USER=root"
-     Environment="DB_PASSWORD=your_password"
+     Environment="SUPABASE_DB_HOST=db.xxxxxxxxxxxx.supabase.co"
+     Environment="SUPABASE_DB_PORT=5432"
+     Environment="SUPABASE_DB_NAME=postgres"
+     Environment="SUPABASE_DB_USER=postgres"
+     Environment="SUPABASE_DB_PASSWORD=your_supabase_password"
+     Environment="SUPABASE_DB_SSL=require"
      ```
    - Restart Tomcat: `sudo systemctl daemon-reload && sudo systemctl restart tomcat9`
-4. **Deploy the WAR File**:
-   - Upload the generated `target/vimal-agency.war` file to the `/var/lib/tomcat9/webapps/` directory on your Hostinger VPS.
-   - You can rename it to `ROOT.war` so the application runs at the root domain (`http://your-vps-ip:8080/`).
+
+3. **Deploy the WAR File**:
+   - Build WAR: `mvn clean package`
+   - Upload the generated `target/vimal-agency.war` file to the `/var/lib/tomcat9/webapps/` directory as `ROOT.war`.
+   - Access at `http://your-vps-ip:8080/`.

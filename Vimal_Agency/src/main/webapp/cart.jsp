@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 <!DOCTYPE html>
 <html lang="gu">
 <head>
@@ -156,7 +155,12 @@
     <div class="premium-wrapper">
         <div class="cart-items-column animate__animated animate__fadeInLeft">
             <%
-                int user_id = (Integer)session.getAttribute("user_id");
+                Object uIdObj = session.getAttribute("user_id");
+                if (uIdObj == null) uIdObj = session.getAttribute("uid");
+                int user_id = 0;
+                if (uIdObj != null) {
+                    user_id = (uIdObj instanceof Integer) ? (Integer) uIdObj : Integer.parseInt(uIdObj.toString());
+                }
                 int subtotal = 0;
                 boolean empty = true;
                 String promoCode = request.getParameter("promoCode");

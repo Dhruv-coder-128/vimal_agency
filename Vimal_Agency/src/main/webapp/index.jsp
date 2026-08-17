@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 
 <%
     // 🔥 SECURITY LOGIC: Login check

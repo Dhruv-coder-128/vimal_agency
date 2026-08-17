@@ -1,13 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.util.Calendar" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.util.Date" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 
 <%
     if (session.getAttribute("admin_id") == null) {
