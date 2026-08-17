@@ -11,12 +11,13 @@ public class UserDAO {
 
     public static boolean registerUser(String username, String email, String password) throws Exception {
         try (Connection cn = DatabaseManager.getConnection()) {
-            
+
             // Check username
             try (PreparedStatement st = cn.prepareStatement("SELECT 1 FROM users WHERE username=?")) {
                 st.setString(1, username);
                 try (ResultSet rs = st.executeQuery()) {
-                    if (rs.next()) return false; // Username taken
+                    if (rs.next())
+                        return false; // Username taken
                 }
             }
 
@@ -24,7 +25,8 @@ public class UserDAO {
             try (PreparedStatement st = cn.prepareStatement("SELECT 1 FROM users WHERE email=?")) {
                 st.setString(1, email);
                 try (ResultSet rs = st.executeQuery()) {
-                    if (rs.next()) return false; // Email taken
+                    if (rs.next())
+                        return false; // Email taken
                 }
             }
 
@@ -43,11 +45,12 @@ public class UserDAO {
 
     public static boolean validateLogin(String loginIdentifier, String password) throws Exception {
         try (Connection cn = DatabaseManager.getConnection();
-             PreparedStatement st = cn.prepareStatement("SELECT password FROM users WHERE (email=? OR username=?) AND status=1")) {
-             
+                PreparedStatement st = cn
+                        .prepareStatement("SELECT password FROM users WHERE (email=? OR username=?) AND status=1")) {
+
             st.setString(1, loginIdentifier);
             st.setString(2, loginIdentifier);
-            
+
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     String storedHash = rs.getString("password");

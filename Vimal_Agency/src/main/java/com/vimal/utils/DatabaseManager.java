@@ -14,9 +14,9 @@ public class DatabaseManager {
         try {
             // Load PostgreSQL JDBC driver
             Class.forName("org.postgresql.Driver");
-            
+
             HikariConfig config = new HikariConfig();
-            
+
             String jdbcUrl = getEnvOrDefault("SUPABASE_JDBC_URL", "");
             if (jdbcUrl.isEmpty()) {
                 String dbHost = getEnvOrDefault("SUPABASE_DB_HOST", "localhost");
@@ -25,21 +25,21 @@ public class DatabaseManager {
                 String sslMode = getEnvOrDefault("SUPABASE_DB_SSL", "require");
                 jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?sslmode=%s", dbHost, dbPort, dbName, sslMode);
             }
-            
+
             String dbUser = getEnvOrDefault("SUPABASE_DB_USER", "postgres");
             String dbPassword = getEnvOrDefault("SUPABASE_DB_PASSWORD", "");
-            
+
             config.setJdbcUrl(jdbcUrl);
             config.setUsername(dbUser);
             config.setPassword(dbPassword);
-            
+
             // Connection Pool settings
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
             config.setIdleTimeout(30000);
             config.setMaxLifetime(1800000);
             config.setConnectionTimeout(30000);
-            
+
             dataSource = new HikariDataSource(config);
         } catch (Exception e) {
             e.printStackTrace();
