@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.9-eclipse-temurin-8 AS build
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
 # Download dependencies
@@ -9,7 +9,7 @@ COPY src ./src
 RUN mvn clean package
 
 # Run stage
-FROM tomcat:9.0-jre8
+FROM tomcat:9.0-jre17-temurin
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 # Copy the built WAR file to Tomcat webapps directory as ROOT.war
