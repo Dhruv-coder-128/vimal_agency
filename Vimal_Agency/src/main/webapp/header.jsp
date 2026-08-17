@@ -307,16 +307,20 @@
                         <%
                             int cartCount = 0;
                             try {
-                                Integer u_id = null;
-                                Object uObj = session.getAttribute("user_id");
-                                if (uObj == null) uObj = session.getAttribute("uid");
-                                if (uObj != null) {
-                                    u_id = (uObj instanceof Integer) ? (Integer) uObj : Integer.parseInt(uObj.toString());
+                                Integer headerUserId = null;
+                                Object headerUserObj = session.getAttribute("user_id");
+                                if (headerUserObj == null) {
+                                    headerUserObj = session.getAttribute("uid");
                                 }
-                                if (u_id != null) {
+                                if (headerUserObj != null) {
+                                    if (headerUserObj instanceof Integer) {
+                                        headerUserId = (Integer) headerUserObj;
+                                    } else {
+                                        headerUserId = Integer.valueOf(headerUserObj.toString());
+                                    }
                                     try (Connection conCount = DatabaseManager.getConnection();
                                          PreparedStatement psCount = conCount.prepareStatement("SELECT SUM(qty) FROM cart WHERE user_id=?")) {
-                                        psCount.setInt(1, u_id);
+                                        psCount.setInt(1, headerUserId);
                                         try (ResultSet rsCount = psCount.executeQuery()) {
                                             if (rsCount.next()) {
                                                 cartCount = rsCount.getInt(1);
@@ -324,7 +328,7 @@
                                         }
                                     }
                                 }
-                            } catch(Exception ignored) {}
+                            } catch (Exception ignored) {}
                         %>
                         <% if(cartCount > 0) { %>
                             <span class="cart-badge"><%= cartCount %></span>
