@@ -3,33 +3,31 @@
 <%@ page import="java.sql.*" %>
 
 <%
-    // 👉 STEP 1: STRICT ADMIN SESSION LOCKDOWN
+    // STEP 1: STRICT ADMIN SESSION LOCKDOWN
     if (session.getAttribute("admin_id") == null) {
         response.sendRedirect("admin_login.jsp?msg=admin_auth_required");
         return; 
     }
 
-    // 👉 AJAX HANDLE
-    if(request.getMethod().equalsIgnoreCase("POST") && "ajax_update_status".equals(request.getParameter("action"))) {
+    // AJAX HANDLE
+    if (request.getMethod().equalsIgnoreCase("POST") && "ajax_update_status".equals(request.getParameter("action"))) {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        try {
-            Connection con = DatabaseManager.getConnection();
+        try (Connection con = DatabaseManager.getConnection()) {
             int oId = Integer.parseInt(request.getParameter("order_id"));
             String sql = "UPDATE orders SET status=? WHERE order_id=?";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, request.getParameter("new_status"));
-            ps.setInt(2, oId);
-            int rows = ps.executeUpdate();
-            ps.close();
-            con.close();
-            
-            if(rows > 0) {
-                out.print("{\"status\":\"success\", \"message\":\"Order #" + request.getParameter("order_id") + " status changed to " + request.getParameter("new_status") + " successfully!\"}");
-            } else {
-                out.print("{\"status\":\"error\", \"message\":\"Failed to update database.\"}");
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setString(1, request.getParameter("new_status"));
+                ps.setInt(2, oId);
+                int rows = ps.executeUpdate();
+                
+                if (rows > 0) {
+                    out.print("{\"status\":\"success\", \"message\":\"Order #" + request.getParameter("order_id") + " status changed to " + request.getParameter("new_status") + " successfully!\"}");
+                } else {
+                    out.print("{\"status\":\"error\", \"message\":\"Failed to update database.\"}");
+                }
             }
-        } catch(Exception e) { 
+        } catch (Exception e) { 
             out.print("{\"status\":\"error\", \"message\":\"" + e.getMessage() + "\"}"); 
         }
         out.flush();
@@ -50,7 +48,6 @@
         .status-delivered { background: #d4edda; color: #155724; }
         .status-cancelled { background: #f8d7da; color: #721c24; }
         
-        /* 🔥 સુધારેલી સુપર મોર્ડન લાઈવ નોટિફિકેશન ડિઝાઇન */
         .toast-container-header {
             position: fixed; 
             top: 30px; 
@@ -71,7 +68,6 @@
             border: none !important;
             transition: all 0.3s ease-in-out;
         }
-        /* સ્ટેટસ પ્રમાણે નોટિફિકેશનની ડાબી બાજુની બોર્ડર બદલાશે */
         .toast-border-pending { border-left: 8px solid #ffc107 !important; }
         .toast-border-delivered { border-left: 8px solid #28a745 !important; }
         .toast-border-cancelled { border-left: 8px solid #dc3545 !important; }
@@ -133,48 +129,49 @@
                 </thead>
                 <tbody>
                     <%
+                        Connection con = null;
                         try {
-                            Connection con = DatabaseManager.getConnection();
-                            ResultSet rs = con.createStatement().executeQuery("SELECT * FROM orders ORDER BY order_date DESC");
-                            while(rs.next()) {
-                                int orderId = rs.getInt("order_id");
-                                String status = rs.getString("status");
-                                String badgeClass = "status-pending";
-                                if("Delivered".equalsIgnoreCase(status)) badgeClass = "status-delivered";
-                                if("Cancelled".equalsIgnoreCase(status)) badgeClass = "status-cancelled";
+                            con = DatabaseManager.getConnection();
+                            try (Statement st = con.createStatement();
+                                 ResultSet rs = st.executeQuery("SELECT * FROM orders ORDER BY order_date DESC")) {
+                                while (rs.next()) {
+                                    int orderId = rs.getInt("order_id");
+                                    String status = rs.getString("status");
+                                    String badgeClass = "status-pending";
+                                    if ("Delivered".equalsIgnoreCase(status)) badgeClass = "status-delivered";
+                                    if ("Cancelled".equalsIgnoreCase(status)) badgeClass = "status-cancelled";
 
-                                // 👉 તમારું ૧૦૦% કન્ફર્મ ઇન્ડિયન કરન્સી લોજિક (Rs. 15,20,680.00)
-                                double finalTotal = rs.getDouble("final_total");
-                                long amountInt = (long) finalTotal;
-                                String doubleStr = String.format("%.2f", finalTotal);
-                                String decimalPart = doubleStr.substring(doubleStr.indexOf("."));
-                                String str = String.valueOf(amountInt);
-                                String formattedAmount = "";
-                                
-                                if (str.length() > 3) {
-                                    String lastThree = str.substring(str.length() - 3);
-                                    String remaining = str.substring(0, str.length() - 3);
-                                    String temp = "";
-                                    int cnt = 0;
-                                    for (int i = remaining.length() - 1; i >= 0; i--) {
-                                        temp = remaining.charAt(i) + temp;
-                                        cnt++;
-                                        if (cnt == 2 && i != 0) {
-                                            temp = "," + temp;
-                                            cnt = 0;
+                                    double finalTotal = rs.getDouble("final_total");
+                                    long amountInt = (long) finalTotal;
+                                    String doubleStr = String.format("%.2f", finalTotal);
+                                    String decimalPart = doubleStr.substring(doubleStr.indexOf("."));
+                                    String str = String.valueOf(amountInt);
+                                    String formattedAmount = "";
+                                    
+                                    if (str.length() > 3) {
+                                        String lastThree = str.substring(str.length() - 3);
+                                        String remaining = str.substring(0, str.length() - 3);
+                                        String temp = "";
+                                        int cnt = 0;
+                                        for (int i = remaining.length() - 1; i >= 0; i--) {
+                                            temp = remaining.charAt(i) + temp;
+                                            cnt++;
+                                            if (cnt == 2 && i != 0) {
+                                                temp = "," + temp;
+                                                cnt = 0;
+                                            }
                                         }
+                                        formattedAmount = "Rs." + temp + "," + lastThree + decimalPart;
+                                    } else {
+                                        formattedAmount = "Rs." + str + decimalPart;
                                     }
-                                    formattedAmount = "Rs." + temp + "," + lastThree + decimalPart;
-                                } else {
-                                    formattedAmount = "Rs." + str + decimalPart;
-                                }
                     %>
-                    <tr style="border-bottom: 1px solid #f1f1f1;" data-status="<%= status %>">
+                    <tr style="border-bottom: 1px solid #f1f1f1;" data-status="<%= (status != null ? status : "") %>">
                         <td class="fw-bold">#<%= orderId %></td>
-                        <td class="text-start ps-4"><%= rs.getString("customer_name") %></td>
-                        <td><%= rs.getString("phone") %></td>
+                        <td class="text-start ps-4"><%= (rs.getString("customer_name") != null ? rs.getString("customer_name") : "") %></td>
+                        <td><%= (rs.getString("phone") != null ? rs.getString("phone") : "-") %></td>
                         <td class="text-success fw-bold"><%= formattedAmount %></td>
-                        <td><span id="badge-<%= orderId %>" class="status-badge <%= badgeClass %>"><%= status %></span></td>
+                        <td><span id="badge-<%= orderId %>" class="status-badge <%= badgeClass %>"><%= (status != null ? status : "") %></span></td>
                         <td>
                             <select class="form-select form-select-sm shadow-none d-inline-block" style="width: 130px;" onchange="updateStatusAJAX(<%= orderId %>, this.value)">
                                 <option value="Pending" <%= "Pending".equalsIgnoreCase(status) ? "selected" : "" %>>Pending</option>
@@ -183,17 +180,24 @@
                             </select>
                         </td>
                     </tr>
-                    <% } con.close(); } catch(Exception e) { out.println(e); } %>
+                    <%
+                                }
+                            }
+                        } catch (Exception e) {
+                            out.println("<tr><td colspan='6' class='text-danger text-center'>Error: " + e.getMessage() + "</td></tr>");
+                        } finally {
+                            if (con != null) try { con.close(); } catch (Exception ignored) {}
+                        }
+                    %>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- 🔥 એકદમ નવું અને ટકાટક લાઇવ નોટિફિકેશન કન્ટેનર -->
+    <!-- Live Notification Container -->
     <div class="toast-container-header">
         <div id="ajaxToast" class="toast custom-toast fade hide" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex align-items-center">
-                <!-- Dynamic આઇકોન બોક્સ -->
                 <div id="toastIconBox" class="toast-icon-box">
                     <i id="toastIcon" class="fa-solid"></i>
                 </div>
@@ -225,7 +229,7 @@
             let rows = document.querySelectorAll("#ordersTable tbody tr");
             rows.forEach(row => {
                 let rowStatus = row.getAttribute("data-status");
-                if (status === "All" || rowStatus.toLowerCase() === status.toLowerCase()) {
+                if (status === "All" || (rowStatus && rowStatus.toLowerCase() === status.toLowerCase())) {
                     row.style.display = "";
                 } else {
                     row.style.display = "none";
@@ -233,7 +237,7 @@
             });
         }
 
-        // 3. AJAX Update Status Feature (બીજી ફાઇલ વગર લાઇવ નોટિફિકેશન ફિક્સ સાથે)
+        // 3. AJAX Update Status Feature
         function updateStatusAJAX(orderId, newStatus) {
             let formData = new URLSearchParams();
             formData.append("action", "ajax_update_status");
@@ -262,18 +266,15 @@
                     else if(checkStatus === "delivered") badge.classList.add("status-delivered");
                     else if(checkStatus === "cancelled") badge.classList.add("status-cancelled");
 
-                    // 💥 🔥 નોટિફિકેશન ડાયનેમિક કલર અને કન્ટેન્ટ ચેન્જ લોજિક
                     let toastElement = document.getElementById('ajaxToast');
                     let iconBox = document.getElementById('toastIconBox');
                     let icon = document.getElementById('toastIcon');
                     let title = document.getElementById('toastTitle');
                     
-                    // બધા જૂના બોર્ડર અને બેકગ્રાઉન્ડ ક્લાસ હટાવો
                     toastElement.classList.remove("toast-border-pending", "toast-border-delivered", "toast-border-cancelled");
                     iconBox.className = "toast-icon-box"; 
                     icon.className = "fa-solid"; 
 
-                    // સ્ટેટસ પ્રમાણે કલર બદલો
                     if(checkStatus === "delivered") {
                         toastElement.classList.add("toast-border-delivered");
                         iconBox.classList.add("bg-success", "text-white");
@@ -294,7 +295,6 @@
                         title.innerText = "Pending";
                     }
 
-                    // મેસેજ સેટ કરો અને બૂટસ્ટ્રેપ ટોસ્ટ શો કરો
                     document.getElementById("toastMsg").innerText = data.message;
                     let myToast = new bootstrap.Toast(toastElement, { delay: 3000 });
                     myToast.show();
@@ -304,7 +304,7 @@
             })
             .catch(err => {
                 console.error("Error:", err);
-                alert("ડેટા સેવ થઈ ગયો છે, કલર જોવા પેજ રીફ્રેશ કરો.");
+                alert("Status updated, please refresh if color change does not display immediately.");
             });
         }
 

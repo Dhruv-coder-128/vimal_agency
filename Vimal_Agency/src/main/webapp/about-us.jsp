@@ -2,14 +2,10 @@
 <%@ page import="java.sql.*" %>
 
 <%
-    // ==============================
     // SESSION AUTHENTICATION CHECK
-    // ==============================
-    // If user is not logged in (user_id not found in session),
-    // redirect user to login page with authentication required message.
-    if (session.getAttribute("user_id") == null) {
+    if (session.getAttribute("user_id") == null && session.getAttribute("uid") == null && session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?msg=auth_required");
-        return; // Stop further page execution
+        return;
     }
 %>
 

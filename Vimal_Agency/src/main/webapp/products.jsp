@@ -4,8 +4,8 @@
 <%@ page import="java.util.*" %>
 
 <%
-    // 👉 STEP 1: USER SESSION CHECK
-    if (session.getAttribute("user_id") == null) {
+    // STEP 1: USER SESSION CHECK
+    if (session.getAttribute("user_id") == null && session.getAttribute("uid") == null && session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?msg=auth_required");
         return; 
     }

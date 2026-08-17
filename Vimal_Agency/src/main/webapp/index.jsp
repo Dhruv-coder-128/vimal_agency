@@ -1,9 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
 
 <%
-    // 🔥 SECURITY LOGIC: Login check
+    // SECURITY LOGIC: Login check
     if (session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp");
         return; 
@@ -124,13 +124,16 @@
     <div class="promo-ticker">
         <div class="ticker-wrap">
             <%
-                try {
-                    Connection cn=DatabaseManager.getConnection();
-                    ResultSet rs=cn.createStatement().executeQuery("SELECT offer_text FROM offers WHERE is_active=1");
-                    while(rs.next()){
+                try (Connection cn = DatabaseManager.getConnection();
+                     Statement stOffer = cn.createStatement();
+                     ResultSet rs = stOffer.executeQuery("SELECT offer_text FROM offers WHERE is_active=1")) {
+                    while (rs.next()) {
             %>
                 <span class="mx-5 fw-600"><i class="fa-solid fa-star text-warning me-2"></i><%= rs.getString("offer_text") %></span>
-            <% } cn.close(); } catch(Exception e) {} %>
+            <% 
+                    }
+                } catch(Exception ignored) {} 
+            %>
         </div>
     </div>
 
@@ -165,25 +168,22 @@
         <div class="text-center">
             <h2 class="section-header">Curated Best Sellers</h2>
         </div>
-<div class="row g-4">
+        <div class="row g-4">
             <%
-                try {
-                    Connection conHome = DatabaseManager.getConnection();
-                    
-                    // અહીં તમારી પસંદગીની 4 પ્રોડક્ટના નામ લખો
-                    String[] bestSellerNames = {"CRUNCHEX - CHILI TADKA", "FARALI CHEVDO", "ALOO SEV", "MASALA MAMRA"};
-                    String[] imagePaths = {"./Product/chili_tadka.png", "./Product/farali_chevdo.jpg", "./Product/aloo_sev.webp", "./Product/masala_mamra.webp"};
-                    String[] tags = {"Bestseller", "Traditional", "Classic", "Hot Deal"};
+                String[] bestSellerNames = {"CRUNCHEX - CHILI TADKA", "FARALI CHEVDO", "ALOO SEV", "MASALA MAMRA"};
+                String[] imagePaths = {"./Product/chili_tadka.png", "./Product/farali_chevdo.jpg", "./Product/aloo_sev.webp", "./Product/masala_mamra.webp"};
+                String[] tags = {"Bestseller", "Traditional", "Classic", "Hot Deal"};
 
-                    for(int i=0; i < bestSellerNames.length; i++) {
-                        // ડેટાબેઝમાંથી કિંમત લેવા માટે
-                        PreparedStatement ps = conHome.prepareStatement("SELECT product_price FROM products WHERE product_name = ?");
-                        ps.setString(1, bestSellerNames[i]);
-                        ResultSet rsPrice = ps.executeQuery();
-                        
-                        String displayPrice = "10"; // Default જો ડેટાબેઝમાં ના હોય તો
-                        if(rsPrice.next()) {
-                            displayPrice = rsPrice.getString("product_price");
+                try (Connection conHome = DatabaseManager.getConnection()) {
+                    for (int i = 0; i < bestSellerNames.length; i++) {
+                        String displayPrice = "10";
+                        try (PreparedStatement ps = conHome.prepareStatement("SELECT product_price FROM products WHERE product_name = ?")) {
+                            ps.setString(1, bestSellerNames[i]);
+                            try (ResultSet rsPrice = ps.executeQuery()) {
+                                if (rsPrice.next()) {
+                                    displayPrice = rsPrice.getString("product_price");
+                                }
+                            }
                         }
             %>
                 <div class="col-lg-3 col-md-6">
@@ -192,7 +192,7 @@
                             <img src="<%= imagePaths[i] %>" alt="<%= bestSellerNames[i] %>">
                         </div>
                         <div class="text-center">
-                            <span class="badge <%= (i==0) ? "bg-warning text-dark" : "bg-light text-dark" %> mb-2"><%= tags[i] %></span>
+                            <span class="badge <%= (i == 0) ? "bg-warning text-dark" : "bg-light text-dark" %> mb-2"><%= tags[i] %></span>
                             <h5 class="fw-bold text-uppercase" style="font-size: 0.95rem;"><%= bestSellerNames[i] %></h5>
                             <h4 class="fw-800 text-navy">₹ <%= displayPrice %></h4>
                             <a href="products.jsp" class="btn btn-sm btn-outline-dark rounded-pill mt-2 px-4">Add to Cart</a>
@@ -200,10 +200,9 @@
                     </div>
                 </div>
             <% 
-                    } // Loop End
-                    conHome.close();
+                    }
                 } catch(Exception e) {
-                    out.println("Error: " + e.getMessage());
+                    out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>");
                 }
             %>
         </div>

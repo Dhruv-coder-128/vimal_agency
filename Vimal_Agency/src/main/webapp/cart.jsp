@@ -27,7 +27,6 @@
             color: var(--primary-dark);
         }
 
-        /* 🛒 Header Style */
         .cart-header {
             padding: 40px 0;
             background: linear-gradient(to right, var(--primary-dark), #1e293b);
@@ -36,7 +35,6 @@
             margin-bottom: -50px;
         }
 
-        /* 📦 Main Wrapper */
         .premium-wrapper {
             display: grid;
             grid-template-columns: 1fr 380px;
@@ -44,7 +42,6 @@
             padding-top: 20px;
         }
 
-        /* 🏷️ Item Card */
         .item-box {
             background: var(--premium-white);
             border-radius: 24px;
@@ -69,7 +66,6 @@
         }
         .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 🔢 Custom Qty Switch */
         .qty-switch {
             display: inline-flex;
             align-items: center;
@@ -87,7 +83,6 @@
         }
         .q-btn:hover { background: var(--accent-gold); }
 
-        /* 💰 Sidebar Summary */
         .summary-glass {
             background: var(--premium-white);
             border-radius: 30px;
@@ -107,7 +102,6 @@
             color: var(--primary-dark);
         }
 
-        /* 🚀 Action Buttons */
         .btn-checkout {
             width: 100%;
             background: var(--primary-dark);
@@ -166,50 +160,51 @@
                 String promoCode = request.getParameter("promoCode");
                 double discount = 0;
 
-                try {
-                    Connection con = DatabaseManager.getConnection();
+                try (Connection con = DatabaseManager.getConnection()) {
                     String sql = "SELECT c.*, p.product_category FROM cart c JOIN products p ON c.product_name = p.product_name WHERE c.user_id = ?";
-                    PreparedStatement ps = con.prepareStatement(sql);
-                    ps.setInt(1, user_id);
-                    ResultSet rs = ps.executeQuery();
-
-                    while(rs.next()){
-                        empty = false;
-                        String pName = rs.getString("product_name");
-                        int price = rs.getInt("price");
-                        int qty = rs.getInt("qty");
-                        subtotal += (price * qty);
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        ps.setInt(1, user_id);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while(rs.next()){
+                                empty = false;
+                                String pName = rs.getString("product_name");
+                                int price = rs.getInt("price");
+                                int qty = rs.getInt("qty");
+                                subtotal += (price * qty);
             %>
             <div class="item-box">
                 <div class="img-container me-4">
-                    <img src="<%= rs.getString("image") %>" alt="Product">
+                    <img src="<%= (rs.getString("image") != null ? rs.getString("image") : "") %>" alt="Product">
                 </div>
                 <div class="flex-grow-1">
-                    <span class="badge bg-light text-muted mb-1"><%= rs.getString("product_category") %></span>
-                    <h5 class="fw-800 mb-1 text-uppercase"><%= pName %></h5>
+                    <span class="badge bg-light text-muted mb-1"><%= (rs.getString("product_category") != null ? rs.getString("product_category") : "") %></span>
+                    <h5 class="fw-800 mb-1 text-uppercase"><%= (pName != null ? pName : "") %></h5>
                     <div class="text-success fw-bold fs-5">&#8377; <%= price %></div>
                 </div>
                 <div class="text-end">
                     <div class="qty-switch mb-2">
-                        <button class="q-btn" onclick="updateQty('<%= pName %>', 'minus')"><i class="fa-solid fa-minus"></i></button>
+                        <button class="q-btn" onclick="updateQty('<%= (pName != null ? pName.replace("'", "\\'") : "") %>', 'minus')"><i class="fa-solid fa-minus"></i></button>
                         <span class="mx-3 fw-800"><%= qty %></span>
-                        <button class="q-btn" onclick="updateQty('<%= pName %>', 'add')"><i class="fa-solid fa-plus"></i></button>
+                        <button class="q-btn" onclick="updateQty('<%= (pName != null ? pName.replace("'", "\\'") : "") %>', 'add')"><i class="fa-solid fa-plus"></i></button>
                     </div>
-                    <button class="btn btn-link text-danger text-decoration-none fw-600 p-0" onclick="updateQty('<%= pName %>', 'delete')">
+                    <button class="btn btn-link text-danger text-decoration-none fw-600 p-0" onclick="updateQty('<%= (pName != null ? pName.replace("'", "\\'") : "") %>', 'delete')">
                         <i class="fa-solid fa-trash-can me-1"></i> Remove
                     </button>
                 </div>
             </div>
             <% 
+                            }
+                        }
                     }
-                    if(!empty && promoCode != null && !promoCode.isEmpty()) {
-                        PreparedStatement psP = con.prepareStatement("SELECT discount_percentage FROM promo WHERE code_name = ?");
-                        psP.setString(1, promoCode);
-                        ResultSet rsP = psP.executeQuery();
-                        if(rsP.next()) discount = subtotal * (rsP.getInt(1)/100.0);
+                    if(!empty && promoCode != null && !promoCode.trim().isEmpty()) {
+                        try (PreparedStatement psP = con.prepareStatement("SELECT discount_percentage FROM promo WHERE code_name = ?")) {
+                            psP.setString(1, promoCode.trim());
+                            try (ResultSet rsP = psP.executeQuery()) {
+                                if(rsP.next()) discount = subtotal * (rsP.getInt(1)/100.0);
+                            }
+                        }
                     }
-                    con.close();
-                } catch(Exception e) {}
+                } catch(Exception ignored) {}
                 
                 if(empty) {
             %>
@@ -271,23 +266,22 @@
         .then(() => location.reload());
     }
     function processCheckout() {
-    if(<%= empty %>) {
-        return alert("Cart is empty");
+        if(<%= empty %>) {
+            return alert("Cart is empty");
+        }
+        
+        let subtotal = "<%= subtotal %>";
+        let discount = "<%= (int)discount %>";
+        let shipping = "<%= (subtotal > 0 && subtotal < 1000) ? 100 : 0 %>";
+        let finalTotal = "<%= (int)(subtotal + ((subtotal > 0 && subtotal < 1000) ? 100 : 0) - discount) %>";
+        
+        let url = "checkout.jsp?subtotal=" + subtotal + 
+                  "&discount=" + discount + 
+                  "&shipping=" + shipping + 
+                  "&final_total=" + finalTotal;
+                  
+        window.location.href = url;
     }
-    
-    let subtotal = "<%= subtotal %>";
-    let discount = "<%= (int)discount %>";
-    let shipping = "<%= (subtotal > 0 && subtotal < 1000) ? 100 : 0 %>";
-    let finalTotal = "<%= (int)(subtotal + ((subtotal > 0 && subtotal < 1000) ? 100 : 0) - discount) %>";
-    
-   
-    let url = "checkout.jsp?subtotal=" + subtotal + 
-              "&discount=" + discount + 
-              "&shipping=" + shipping + 
-              "&final_total=" + finalTotal;
-              
-    window.location.href = url;
-}
 </script>
 </body>
 </html>

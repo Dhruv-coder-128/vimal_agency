@@ -1,13 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 
 <%
-    // 👉 STEP 1: USER SESSION CHECK (SECURITY)
-    // Jo user login nathi, to tene feedback page na dekhavu joie.
-    if (session.getAttribute("user_id") == null) {
-        // Login page par redirect karyu
+    // USER SESSION CHECK (SECURITY)
+    if (session.getAttribute("user_id") == null && session.getAttribute("uid") == null && session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?msg=auth_required");
         return; 
     }
@@ -23,7 +20,6 @@
 <link rel="stylesheet" href="main.css">
 
 <style>
-/* 🔥 CENTER TOAST MESSAGE */
 .toast-message {
     position: fixed; top: -150px; left: 50%;
     transform: translateX(-50%); background: #fff;
@@ -41,7 +37,6 @@
 #toast-body { font-size: 14px; color: #666; margin: 0; }
 .toast-close { cursor: pointer; font-size: 22px; color: #ccc; margin-left: 20px; }
 
-/* Existing Page Styles */
 .feedback-wrapper { padding: 50px 0; background: #f4f7f6; min-height: 80vh; display: flex; justify-content: center; align-items: center; }
 .feedback-card { width: 100%; max-width: 500px; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
 .feedback-title { background: #1a242f; color: #ffc800; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }
@@ -66,36 +61,34 @@
 </div>
 
 <%
-/* ================= BACKEND LOGIC ================= */
 String successFlag = "0";
 
 if ("POST".equalsIgnoreCase(request.getMethod())) {
-    request.setCharacterEncoding("UTF-8"); // Emoji support
+    request.setCharacterEncoding("UTF-8");
     
     String name = request.getParameter("name");
     String mail = request.getParameter("mail");
     String experience = request.getParameter("experience");
     String message = request.getParameter("message");
 
-    Connection cn = null;
-    PreparedStatement st = null;
-
-    try {
-        // UTF-8 Connection
-        cn = DatabaseManager.getConnection();
-        st = cn.prepareStatement("INSERT INTO feedback (name, mail, experience, message) VALUES (?, ?, ?, ?)");
-
+    try (Connection cn = DatabaseManager.getConnection();
+         PreparedStatement st = cn.prepareStatement("INSERT INTO feedback (name, mail, experience, message) VALUES (?, ?, ?, ?)")) {
         st.setString(1, name);
         st.setString(2, mail);
         st.setInt(3, Integer.parseInt(experience));
         st.setString(4, message);
 
         int no = st.executeUpdate();
-        if (no > 0) { successFlag = "1"; }
+        if (no > 0) { 
+            successFlag = "1"; 
+        }
+    } catch(Exception e) { 
+        out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>"); 
     }
-    catch(Exception e){ out.println("<pre style='color:red'>"+e+"</pre>"); }
-    finally { try { if(st!=null) st.close(); if(cn!=null) cn.close(); } catch(Exception ex){} }
 }
+
+String fUser = (session.getAttribute("username") != null) ? session.getAttribute("username").toString() : "";
+String fEmail = (session.getAttribute("user_email") != null) ? session.getAttribute("user_email").toString() : "";
 %>
 
 <div class="feedback-wrapper">
@@ -104,14 +97,14 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
             <i class="fa-solid fa-comment-dots"></i> Customer Feedback
         </div>
         <div class="card-body p-4">
-            <form method="post">
+            <form method="post" action="feedback.jsp">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Full Name</label>
-                    <input type="text" name="name" class="form-control" value="<%= session.getAttribute("username") %>" readonly required>
+                    <input type="text" name="name" class="form-control" value="<%= fUser %>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Email Address</label>
-                    <input type="email" name="mail" class="form-control" value="<%= session.getAttribute("user_email") %>" readonly required>
+                    <input type="email" name="mail" class="form-control" value="<%= fEmail %>" placeholder="email@example.com" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">How was your experience?</label>
@@ -149,7 +142,7 @@ function closeToast() {
     setTimeout(() => { window.location="index.jsp"; }, 600);
 }
 
-<% if("1".equals(successFlag)){ %>
+<% if ("1".equals(successFlag)) { %>
     window.onload = function() {
         showSuccessToast();
     };

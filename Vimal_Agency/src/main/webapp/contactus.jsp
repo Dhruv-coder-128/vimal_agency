@@ -1,11 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.vimal.utils.DatabaseManager" %>
 
 <%
-    // 👉 STEP 1: STRICT USER SESSION CHECK
-    if (session.getAttribute("user_id") == null) {
+    // STRICT USER SESSION CHECK
+    if (session.getAttribute("user_id") == null && session.getAttribute("uid") == null && session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?msg=auth_required");
         return; 
     }
@@ -35,7 +34,6 @@
             background-color: #f8fafc;
         }
 
-        /* Hero Section */
         .contact-hero {
             background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
             padding: 80px 0 150px 0;
@@ -43,7 +41,6 @@
             text-align: center;
         }
 
-        /* Glass Cards */
         .contact-container-wrapper {
             margin-top: -100px;
             padding-bottom: 80px;
@@ -75,7 +72,6 @@
             font-size: 1.5rem;
         }
 
-        /* Form Styling */
         .contact-form-card {
             background: white;
             border-radius: 30px;
@@ -122,7 +118,6 @@
             transform: scale(1.02);
         }
 
-        /* Toast Styles */
         .toast-message {
             position: fixed; top: -100px; left: 50%;
             transform: translateX(-50%); background: #fff;
@@ -148,25 +143,30 @@
 </div>
 
 <%
-String success=null;
-if("POST".equalsIgnoreCase(request.getMethod())) {
+String success = null;
+if ("POST".equalsIgnoreCase(request.getMethod())) {
     request.setCharacterEncoding("UTF-8");
-    String name=request.getParameter("name");
-    String email=request.getParameter("email");
-    String cno=request.getParameter("cno");
-    String message=request.getParameter("message");
+    String name = request.getParameter("name");
+    String email = request.getParameter("email");
+    String cno = request.getParameter("cno");
+    String message = request.getParameter("message");
 
-    try {
-        Connection cn=DatabaseManager.getConnection();
-        PreparedStatement st=cn.prepareStatement("INSERT INTO contact_us(name,email,cno,message) VALUES(?,?,?,?)");
-        st.setString(1,name);
-        st.setString(2,email);
-        st.setString(3,cno);
-        st.setString(4,message);
-        if(st.executeUpdate()>0){ success="1"; }
-        st.close(); cn.close();
-    } catch(Exception e){ out.println(e); }
+    try (Connection cn = DatabaseManager.getConnection();
+         PreparedStatement st = cn.prepareStatement("INSERT INTO contact_us(name,email,cno,message) VALUES(?,?,?,?)")) {
+        st.setString(1, name);
+        st.setString(2, email);
+        st.setString(3, cno);
+        st.setString(4, message);
+        if (st.executeUpdate() > 0) { 
+            success = "1"; 
+        }
+    } catch (Exception e) { 
+        out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>"); 
+    }
 }
+
+String curUser = (session.getAttribute("username") != null) ? session.getAttribute("username").toString() : "";
+String curEmail = (session.getAttribute("user_email") != null) ? session.getAttribute("user_email").toString() : "";
 %>
 
 <section class="contact-hero">
@@ -210,14 +210,14 @@ if("POST".equalsIgnoreCase(request.getMethod())) {
                 <div class="row g-5">
                     <div class="col-md-6 border-end">
                         <h3 class="fw-800 mb-4">Send us a Message</h3>
-                        <form action="" method="post">
+                        <form action="contactus.jsp" method="post">
                             <div class="input-group-custom">
                                 <label class="small fw-bold text-muted mb-2">FULL NAME</label>
-                                <input type="text" name="name" value="<%= session.getAttribute("username") %>" class="form-control-custom" readonly>
+                                <input type="text" name="name" value="<%= curUser %>" class="form-control-custom" required>
                             </div>
                             <div class="input-group-custom">
                                 <label class="small fw-bold text-muted mb-2">EMAIL ADDRESS</label>
-                                <input type="email" name="email" value="<%= session.getAttribute("user_email") %>" class="form-control-custom" readonly>
+                                <input type="email" name="email" value="<%= curEmail %>" class="form-control-custom" placeholder="email@example.com" required>
                             </div>
                             <div class="input-group-custom">
                                 <label class="small fw-bold text-muted mb-2">MOBILE NUMBER</label>
@@ -262,7 +262,7 @@ function showSuccessToast() {
     }, 3000);
 }
 
-<% if("1".equals(success)){ %>
+<% if ("1".equals(success)) { %>
     window.onload = function() {
         showSuccessToast();
     };

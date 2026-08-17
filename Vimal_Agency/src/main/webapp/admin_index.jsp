@@ -136,15 +136,16 @@
             try {
                 con = DatabaseManager.getConnection();
                 
-                ResultSet rs;
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM promo"); if(rs.next()) pCount=rs.getInt(1);
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM feedback"); if(rs.next()) fCount=rs.getInt(1);
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM contact_us"); if(rs.next()) cCount=rs.getInt(1);
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM products"); if(rs.next()) prCount=rs.getInt(1);
-                
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Pending'"); if(rs.next()) pendingCount=rs.getInt(1);
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Cancelled'"); if(rs.next()) cancelledCount=rs.getInt(1);
-                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Delivered'"); if(rs.next()) deliveredCount=rs.getInt(1);
+                try (Statement st = con.createStatement()) {
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM promo")) { if(rs.next()) pCount=rs.getInt(1); }
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM feedback")) { if(rs.next()) fCount=rs.getInt(1); }
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM contact_us")) { if(rs.next()) cCount=rs.getInt(1); }
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM products")) { if(rs.next()) prCount=rs.getInt(1); }
+                    
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Pending'")) { if(rs.next()) pendingCount=rs.getInt(1); }
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Cancelled'")) { if(rs.next()) cancelledCount=rs.getInt(1); }
+                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Delivered'")) { if(rs.next()) deliveredCount=rs.getInt(1); }
+                }
                 
                 SimpleDateFormat sqlDayFmt = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat labelDayFmt = new SimpleDateFormat("E"); 
@@ -156,19 +157,17 @@
                     weeklyDays[6-i] = labelDayFmt.format(cal.getTime());
                     
                     String salesQuery = "SELECT SUM(final_total), STRING_AGG(CONCAT(customer_name, '::', final_total), '|') FROM orders WHERE status='Delivered' AND CAST(order_date AS DATE) = '" + dateStr + "'";
-                    Statement stSales = con.createStatement();
-                    ResultSet rsSales = stSales.executeQuery(salesQuery);
-                    
-                    if(rsSales.next()) {
-                        weeklySales[6-i] = rsSales.getDouble(1);
-                        String custDetails = rsSales.getString(2);
-                        weeklyCustomers[6-i] = (custDetails != null && !custDetails.trim().isEmpty()) ? custDetails : "No Orders";
-                    } else {
-                        weeklySales[6-i] = 0.0;
-                        weeklyCustomers[6-i] = "No Orders";
+                    try (Statement stSales = con.createStatement();
+                         ResultSet rsSales = stSales.executeQuery(salesQuery)) {
+                        if(rsSales.next()) {
+                            weeklySales[6-i] = rsSales.getDouble(1);
+                            String custDetails = rsSales.getString(2);
+                            weeklyCustomers[6-i] = (custDetails != null && !custDetails.trim().isEmpty()) ? custDetails : "No Orders";
+                        } else {
+                            weeklySales[6-i] = 0.0;
+                            weeklyCustomers[6-i] = "No Orders";
+                        }
                     }
-                    rsSales.close();
-                    stSales.close();
                 }
         %>
 
@@ -224,16 +223,19 @@
                         <table class="table table-hover border-0 mb-0">
                             <tbody class="border-0">
                                 <%
-                                    ResultSet rsF = con.createStatement().executeQuery("SELECT name,experience FROM feedback ORDER BY id DESC LIMIT 5");
-                                    while(rsF.next()){
+                                    try (Statement stF = con.createStatement();
+                                         ResultSet rsF = stF.executeQuery("SELECT name, experience FROM feedback ORDER BY id DESC LIMIT 5")) {
+                                        while(rsF.next()){
+                                            String fName = rsF.getString("name");
+                                            String initial = (fName != null && !fName.isEmpty()) ? fName.substring(0,1).toUpperCase() : "U";
                                 %>
                                 <tr class="align-middle">
                                     <td width="50">
                                         <div class="rounded-circle bg-light d-flex align-items-center justify-content-center fw-bold" style="width:45px;height:45px;font-size:13px;">
-                                            <%=rsF.getString("name").substring(0,1).toUpperCase()%>
+                                            <%= initial %>
                                         </div>
                                     </td>
-                                    <td><span class="fw-bold"><%=rsF.getString("name")%></span></td>
+                                    <td><span class="fw-bold"><%= (fName != null ? fName : "") %></span></td>
                                     <td class="text-warning">
                                         <% for(int i=0;i<5;i++){ %>
                                             <i class="fa-solid fa-star <%= (i < rsF.getInt("experience")) ? "" : "text-light" %>"></i>
@@ -243,7 +245,10 @@
                                         <div class="btn-action"><i class="fa fa-eye small"></i></div>
                                     </td>
                                 </tr>
-                                <% } %>
+                                <% 
+                                        }
+                                    }
+                                %>
                             </tbody>
                         </table>
                     </div>
@@ -260,10 +265,11 @@
                         <table class="table table-hover border-0 mb-0">
                             <tbody class="border-0">
                                 <%
-                                    ResultSet rsC = con.createStatement().executeQuery("SELECT name, email, message FROM contact_us ORDER BY id DESC LIMIT 5");
-                                    while(rsC.next()){
-                                        String msg = rsC.getString("message");
-                                        if(msg != null && msg.length() > 32) { msg = msg.substring(0, 30) + "..."; }
+                                    try (Statement stC = con.createStatement();
+                                         ResultSet rsC = stC.executeQuery("SELECT name, email, message FROM contact_us ORDER BY id DESC LIMIT 5")) {
+                                        while(rsC.next()){
+                                            String msg = rsC.getString("message");
+                                            if(msg != null && msg.length() > 32) { msg = msg.substring(0, 30) + "..."; }
                                 %>
                                 <tr class="align-middle">
                                     <td width="50">
@@ -272,15 +278,18 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="fw-bold"><%=rsC.getString("name")%></div>
-                                        <small class="text-muted"><%=rsC.getString("email")%></small>
+                                        <div class="fw-bold"><%= (rsC.getString("name") != null ? rsC.getString("name") : "") %></div>
+                                        <small class="text-muted"><%= (rsC.getString("email") != null ? rsC.getString("email") : "") %></small>
                                     </td>
-                                    <td><span class="text-secondary small"><%=msg%></span></td>
+                                    <td><span class="text-secondary small"><%= (msg != null ? msg : "") %></span></td>
                                     <td class="text-end">
                                         <div class="btn-action"><i class="fa fa-reply small"></i></div>
                                     </td>
                                 </tr>
-                                <% } %>
+                                <% 
+                                        }
+                                    }
+                                %>
                             </tbody>
                         </table>
                     </div>
@@ -288,9 +297,9 @@
             </div>
         </div>
 
-        <!-- 🚀 Graphs Layout Segment -->
+        <!-- Graphs Layout Segment -->
         <div class="row g-4 mb-4">
-            <!-- 📊 Graph 1: Sales Line Chart WITH ITS OWN FILTER -->
+            <!-- Graph 1: Sales Line Chart -->
             <div class="col-lg-6">
                 <div class="widget-chart-card h-100">
                     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
@@ -316,7 +325,7 @@
                 </div>
             </div>
 
-            <!-- 📊 Graph 2: System Asset Counts (No Filter Needed for static summary counters) -->
+            <!-- Graph 2: System Asset Counts -->
             <div class="col-lg-6">
                 <div class="widget-chart-card h-100">
                     <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -333,7 +342,7 @@
             </div>
         </div>
 
-        <!-- 🚀 Graph 3: Live Order Status Tracking WITH ITS OWN FILTER -->
+        <!-- Graph 3: Live Order Status Tracking -->
         <div class="row g-4">
             <div class="col-12">
                 <div class="widget-chart-card">
@@ -364,7 +373,7 @@
 
         <% 
             } catch(Exception e) { out.print("<div class='alert alert-danger mt-3'>Error: " + e.getMessage() + "</div>"); } 
-            finally { if(con != null) con.close(); }
+            finally { if(con != null) try { con.close(); } catch(Exception ignored) {} }
         %>
     </div>
 
@@ -398,7 +407,6 @@
             past7Days.setDate(past7Days.getDate() - 6);
             const fromDate = past7Days.toISOString().split('T')[0];
             
-            // Set all standard inputs cleanly
             document.getElementById('salesFromDate').value = fromDate;
             document.getElementById('salesToDate').value = today;
             document.getElementById('orderFromDate').value = fromDate;
@@ -422,7 +430,7 @@
             setTimeout(updateClock, 1000);
         }
 
-        /* 📈 Graph 1: Sales Revenue Value Config (Line) */
+        /* Graph 1: Sales Revenue Value Config */
         function initSalesValueChart(filteredLabels = null, filteredData = null) {
             const ctx = document.getElementById('weeklySalesValueChart').getContext('2d');
             const gradientBg = ctx.createLinearGradient(0, 0, 0, 240);
@@ -491,7 +499,7 @@
             });
         }
 
-        /* 📊 Graph 2: Asset Metrics Chart */
+        /* Graph 2: Asset Metrics Chart */
         function initAssetChart() {
             const ctx = document.getElementById('assetCountChart').getContext('2d');
             new Chart(ctx, {
@@ -517,7 +525,7 @@
             });
         }
 
-        /* 🍩 Graph 3: Live Order Status Tracker (Doughnut) */
+        /* Graph 3: Live Order Status Tracker */
         function initOrderChart(filteredData = null) {
             const ctx = document.getElementById('orderStatusChart').getContext('2d');
             const defaultData = [<%= pendingCount %>, <%= cancelledCount %>, <%= deliveredCount %>];
@@ -545,7 +553,6 @@
             });
         }
 
-        /* 🎯 Only filters Sales Value graph independently */
         function applySalesFilterOnly() {
             const fromDateStr = document.getElementById('salesFromDate').value;
             const toDateStr = document.getElementById('salesToDate').value;
@@ -566,23 +573,19 @@
 
             if(labelsArray.length > 15) { alert("Kindly select a maximum of 15 days range!"); return; }
             
-            // Re-render sales only! Order graph stays intact
             initSalesValueChart(labelsArray, randomSalesData);
         }
 
-        /* 🎯 Only filters Order Operations tracking graph independently */
         function applyOrderFilterOnly() {
             const fromDateStr = document.getElementById('orderFromDate').value;
             const toDateStr = document.getElementById('orderToDate').value;
 
             if(!fromDateStr || !toDateStr) { alert("Please select both dates!"); return; }
 
-            // Simulated dynamic changes for selected range structure 
             let fPending = Math.floor(Math.random() * 20) + 1;
             let fCancelled = Math.floor(Math.random() * 8);
             let fDelivered = Math.floor(Math.random() * 50) + 15;
 
-            // Re-render order structural doughnut only! Sales graph stays intact
             initOrderChart([fPending, fCancelled, fDelivered]);
         }
     </script>
