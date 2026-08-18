@@ -6,7 +6,7 @@
     // USER SESSION CHECK (SECURITY)
     if (session.getAttribute("user_id") == null && session.getAttribute("uid") == null && session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?msg=auth_required");
-        return; 
+        return;
     }
 %>
 
@@ -27,20 +27,22 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     border-left: 6px solid #4caf50; display: flex;
     align-items: center; z-index: 10001;
-    min-width: 380px; transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+    width: max-content;
+    max-width: min(92vw, 420px);
+    transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
 }
 
-.toast-message.active { top: 40px; }
-.toast-content { display: flex; align-items: center; gap: 15px; }
-.toast-icon { font-size: 28px; color: #4caf50; }
-.toast-title { font-weight: 800; color: #333; display: block; font-size: 16px; }
-#toast-body { font-size: 14px; color: #666; margin: 0; }
-.toast-close { cursor: pointer; font-size: 22px; color: #ccc; margin-left: 20px; }
+.toast-message.active { top: 25px; }
+.toast-content { display: flex; align-items: center; gap: 12px; }
+.toast-icon { font-size: 24px; color: #4caf50; flex-shrink: 0; }
+.toast-title { font-weight: 800; color: #333; display: block; font-size: 15px; }
+#toast-body { font-size: 13px; color: #666; margin: 0; }
+.toast-close { cursor: pointer; font-size: 22px; color: #ccc; margin-left: 15px; }
 
-.feedback-wrapper { padding: 50px 0; background: #f4f7f6; min-height: 80vh; display: flex; justify-content: center; align-items: center; }
-.feedback-card { width: 100%; max-width: 500px; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-.feedback-title { background: #1a242f; color: #ffc800; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }
-.btn-submit { background: #ffc800; color: #1a242f; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.3s; border: none; }
+.feedback-wrapper { padding: clamp(30px, 6vw, 60px) 15px; background: #f8fafc; min-height: 80vh; display: flex; justify-content: center; align-items: center; }
+.feedback-card { width: 100%; max-width: 520px; border: none; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); overflow: hidden; background: white; }
+.feedback-title { background: #1a242f; color: #ffc800; padding: 20px; text-align: center; font-size: clamp(20px, 4vw, 24px); font-weight: 800; }
+.btn-submit { background: #ffc800; color: #1a242f; font-weight: 800; padding: 14px; border-radius: 10px; transition: 0.25s; border: none; width: 100%; min-height: 48px; }
 .btn-submit:hover { background: #e6b800; transform: translateY(-2px); }
 </style>
 </head>
@@ -65,7 +67,7 @@ String successFlag = "0";
 
 if ("POST".equalsIgnoreCase(request.getMethod())) {
     request.setCharacterEncoding("UTF-8");
-    
+
     String name = request.getParameter("name");
     String mail = request.getParameter("mail");
     String experience = request.getParameter("experience");
@@ -79,11 +81,11 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
         st.setString(4, message);
 
         int no = st.executeUpdate();
-        if (no > 0) { 
-            successFlag = "1"; 
+        if (no > 0) {
+            successFlag = "1";
         }
-    } catch(Exception e) { 
-        out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>"); 
+    } catch(Exception e) {
+        out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>");
     }
 }
 

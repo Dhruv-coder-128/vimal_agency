@@ -92,71 +92,91 @@
         :root {
             --primary: #4a2c7c;
             --secondary: #f0c14b;
-            --bg: #f4f7f6;
+            --bg: #f8fafc;
             --success: #2ecc71;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: var(--bg);
             margin: 0;
+            color: #1e293b;
         }
 
         .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
+            width: 100%;
+            max-width: 760px;
+            margin: clamp(20px, 4vw, 40px) auto;
+            padding: 15px;
         }
 
         .checkout-card {
             background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: clamp(20px, 4vw, 35px);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
         }
 
         h2 {
             color: var(--primary);
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: clamp(20px, 4vw, 24px);
+            font-weight: 800;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: #555;
+            color: #475569;
+            font-size: 14px;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            min-height: 46px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(74, 44, 124, 0.1);
         }
 
         .row {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .col {
-            flex: 1;
+            flex: 1 1 200px;
+            min-width: 150px;
         }
 
         .order-summary {
-            background: #f9f9f9;
+            background: #f8fafc;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 25px;
             border-left: 5px solid var(--primary);
+            border: 1px solid #e2e8f0;
+            border-left-width: 5px;
         }
 
         .summary-line {
@@ -164,32 +184,38 @@
             justify-content: space-between;
             margin: 8px 0;
             font-size: 15px;
+            color: #64748b;
         }
 
         .total-line {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: var(--success);
-            border-top: 1px solid #ddd;
+            font-weight: 800;
+            font-size: 1.25em;
+            color: #0f172a;
+            border-top: 1px dashed #cbd5e1;
             padding-top: 10px;
             margin-top: 10px;
         }
 
         .btn-place-order {
             width: 100%;
-            background: var(--success);
+            min-height: 50px;
+            background: #10b981;
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 800;
             cursor: pointer;
             transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-place-order:hover {
-            background: #27ae60;
+            background: #059669;
             transform: translateY(-2px);
         }
     </style>

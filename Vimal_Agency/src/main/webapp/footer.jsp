@@ -29,7 +29,7 @@
             <div class="col-lg-6 col-md-12">
                 <h4 style="color: #ffffff; font-weight: 700; margin-bottom: 15px; font-size: 1.2rem;">Connect With Us</h4>
                 <p style="color: #cbd5e1; margin-bottom: 25px; line-height: 1.6;">Vimal Agency has been a trusted partner in delivering quality snacks since 1987. Follow us on our social platforms for the latest updates and campaigns.</p>
-                
+
                 <div class="social-links d-flex gap-3 flex-wrap">
                     <style>
                         .soc-link {

@@ -7,7 +7,7 @@
 
     // Check for POST request
     if(request.getMethod().equalsIgnoreCase("POST")){
-        
+
         // Ensure UTF-8 encoding for data handling
         request.setCharacterEncoding("UTF-8");
 
@@ -33,31 +33,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Vimal Agency</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
+
     <style>
         * { box-sizing: border-box; }
-        
+
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            /* New Dynamic Gradient */
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #f8fafc;
+            padding: 30px 15px;
         }
 
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 50px 40px;
-            border-radius: 40px;
-            width: 200%;
+            padding: clamp(30px, 6vw, 50px) clamp(20px, 5vw, 40px);
+            border-radius: 24px;
+            width: 100%;
             max-width: 420px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             text-align: center;

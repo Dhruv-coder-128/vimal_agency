@@ -42,7 +42,7 @@
                             try (PreparedStatement ins = con.prepareStatement("INSERT INTO cart (user_id, product_name, price, image, qty) VALUES (?, ?, ?, ?, 1)")) {
                                 ins.setInt(1, userId);
                                 ins.setString(2, name);
-                                ins.setInt(3, Integer.parseInt(priceStr));
+                                ins.setInt(3, (int) Math.round(Double.parseDouble(priceStr.trim())));
                                 ins.setString(4, img);
                                 ins.executeUpdate();
                             }

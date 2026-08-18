@@ -23,10 +23,18 @@
 
     <style>
         .admin-main {
-            margin-left: 260px;
-            padding: 35px;
+            margin-left: 0;
+            padding: clamp(15px, 3vw, 35px);
             background: #f8f9fa;
             min-height: 100vh;
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .admin-main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
         }
 
         .form-card {
@@ -34,7 +42,7 @@
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             border-top: 5px solid #ffc800;
-            padding: 25px;
+            padding: clamp(20px, 4vw, 35px);
         }
     </style>
 </head>
@@ -48,7 +56,7 @@
 
         <!-- Page Heading Section -->
         <div class="mb-4">
-            <h1 style="font-weight: 800; color: #1a242f; margin: 0; letter-spacing: -1px;">
+            <h1 style="font-weight: 800; color: #1a242f; margin: 0; letter-spacing: -1px; font-size: clamp(1.5rem, 3vw, 2rem);">
                 Add New Snack
             </h1>
             <p style="color: #7f8c8d;">
@@ -66,15 +74,22 @@
                 String p_desc = request.getParameter("p_desc");
                 String p_code = request.getParameter("p_code");
 
+                int priceVal = 0;
+                if (p_price != null && !p_price.trim().isEmpty()) {
+                    try {
+                        priceVal = (int) Math.round(Double.parseDouble(p_price.trim()));
+                    } catch (Exception ignored) {}
+                }
+
                 try (Connection con = DatabaseManager.getConnection()) {
                     String query = "INSERT INTO products (code, product_name, product_price, product_category, product_describe, product_image) VALUES (?, ?, ?, ?, ?, ?)";
                     try (PreparedStatement ps = con.prepareStatement(query)) {
-                        ps.setString(1, p_code);
-                        ps.setString(2, p_name);
-                        ps.setInt(3, Integer.parseInt(p_price));
-                        ps.setString(4, p_cat);
-                        ps.setString(5, p_desc);
-                        ps.setString(6, p_img);
+                        ps.setString(1, p_code != null ? p_code.trim() : "");
+                        ps.setString(2, p_name != null ? p_name.trim() : "");
+                        ps.setInt(3, priceVal);
+                        ps.setString(4, p_cat != null ? p_cat.trim() : "");
+                        ps.setString(5, p_desc != null ? p_desc.trim() : "");
+                        ps.setString(6, p_img != null ? p_img.trim() : "");
                         int result = ps.executeUpdate();
                         if (result > 0) {
                             out.println("<script>alert('Product Added Successfully!'); window.location='admin_products.jsp';</script>");

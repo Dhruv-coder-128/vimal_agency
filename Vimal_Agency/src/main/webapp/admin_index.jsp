@@ -8,10 +8,10 @@
 <%
     if (session.getAttribute("admin_id") == null) {
         response.sendRedirect("admin_login.jsp?msg=admin_auth_required");
-        return; 
+        return;
     }
     String adminName = (session.getAttribute("admin_name") != null) ? session.getAttribute("admin_name").toString() : "Karan";
-    String userName = (session.getAttribute("user_full_name") != null) ? session.getAttribute("user_full_name").toString() : "Karan"; 
+    String userName = (session.getAttribute("user_full_name") != null) ? session.getAttribute("user_full_name").toString() : "Karan";
 %>
 
 <!DOCTYPE html>
@@ -28,41 +28,54 @@
     <style>
         :root{ --primary:#ffc800; --dark:#1a242f; --light-bg:#f0f2f5; --accent:#6366f1; --glass:rgba(255, 255, 255, 0.8); }
         body{ background:var(--light-bg); font-family:'Poppins', sans-serif; overflow-x:hidden; }
-        
-        .admin-dashboard-wrapper{ 
-            margin-left:260px; width:calc(100% - 260px); 
-            padding:35px 40px; min-height:100vh; transition: all 0.3s;
+
+        .admin-dashboard-wrapper{
+            margin-left: 0;
+            width: 100%;
+            padding: clamp(15px, 3vw, 35px);
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        @media (min-width: 992px) {
+            .admin-dashboard-wrapper {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+                padding: 35px 40px;
+            }
         }
 
         .dashboard-header-badge {
             background: var(--glass);
             backdrop-filter: blur(10px);
-            padding: 20px 30px;
+            padding: clamp(15px, 3vw, 25px);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             border: 1px solid rgba(255,255,255,0.3);
         }
-        
+
         .stat-card {
-            background: #fff; border-radius: 20px; padding: 25px;
+            background: #fff; border-radius: 20px; padding: clamp(18px, 3vw, 25px);
             border: none; position: relative; overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.03);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.3s ease;
         }
-        .stat-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-        
+        .stat-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+
         .progress-micro { height: 6px; background: #eee; border-radius: 10px; margin-top: 15px; }
         .progress-bar-micro { border-radius: 10px; background: var(--accent); }
 
         .widget-chart-card {
             background: #ffffff;
-            color: var(--dark); 
-            border-radius: 20px; 
-            padding: 25px; 
+            color: var(--dark);
+            border-radius: 20px;
+            padding: 25px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.03);
             border: 1px solid rgba(0,0,0,0.02);
         }
@@ -91,7 +104,7 @@
     <%@ include file="admin_header.jsp" %>
 
     <div class="admin-dashboard-wrapper">
-        
+
         <div class="dashboard-header-badge">
             <div class="user-info-section d-flex align-items-center">
                 <div class="position-relative me-3">
@@ -128,34 +141,34 @@
             Connection con = null;
             int pCount=0, fCount=0, cCount=0, prCount=0;
             int pendingCount=0, cancelledCount=0, deliveredCount=0;
-            
+
             double[] weeklySales = new double[7];
             String[] weeklyDays = new String[7];
-            String[] weeklyCustomers = new String[7]; 
-            
+            String[] weeklyCustomers = new String[7];
+
             try {
                 con = DatabaseManager.getConnection();
-                
+
                 try (Statement st = con.createStatement()) {
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM promo")) { if(rs.next()) pCount=rs.getInt(1); }
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM feedback")) { if(rs.next()) fCount=rs.getInt(1); }
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM contact_us")) { if(rs.next()) cCount=rs.getInt(1); }
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM products")) { if(rs.next()) prCount=rs.getInt(1); }
-                    
+
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Pending'")) { if(rs.next()) pendingCount=rs.getInt(1); }
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Cancelled'")) { if(rs.next()) cancelledCount=rs.getInt(1); }
                     try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM orders WHERE status = 'Delivered'")) { if(rs.next()) deliveredCount=rs.getInt(1); }
                 }
-                
+
                 SimpleDateFormat sqlDayFmt = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat labelDayFmt = new SimpleDateFormat("E"); 
-                
+                SimpleDateFormat labelDayFmt = new SimpleDateFormat("E");
+
                 for(int i = 6; i >= 0; i--) {
                     Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.DATE, -i);
                     String dateStr = sqlDayFmt.format(cal.getTime());
                     weeklyDays[6-i] = labelDayFmt.format(cal.getTime());
-                    
+
                     String salesQuery = "SELECT SUM(final_total), STRING_AGG(CONCAT(customer_name, '::', final_total), '|') FROM orders WHERE status='Delivered' AND CAST(order_date AS DATE) = '" + dateStr + "'";
                     try (Statement stSales = con.createStatement();
                          ResultSet rsSales = stSales.executeQuery(salesQuery)) {
@@ -245,7 +258,7 @@
                                         <div class="btn-action"><i class="fa fa-eye small"></i></div>
                                     </td>
                                 </tr>
-                                <% 
+                                <%
                                         }
                                     }
                                 %>
@@ -286,7 +299,7 @@
                                         <div class="btn-action"><i class="fa fa-reply small"></i></div>
                                     </td>
                                 </tr>
-                                <% 
+                                <%
                                         }
                                     }
                                 %>
@@ -371,8 +384,8 @@
             </div>
         </div>
 
-        <% 
-            } catch(Exception e) { out.print("<div class='alert alert-danger mt-3'>Error: " + e.getMessage() + "</div>"); } 
+        <%
+            } catch(Exception e) { out.print("<div class='alert alert-danger mt-3'>Error: " + e.getMessage() + "</div>"); }
             finally { if(con != null) try { con.close(); } catch(Exception ignored) {} }
         %>
     </div>
@@ -382,12 +395,12 @@
         let orderChartInstance = null;
 
         const customerDataList = [
-            `<%= weeklyCustomers[0] %>`, 
-            `<%= weeklyCustomers[1] %>`, 
-            `<%= weeklyCustomers[2] %>`, 
-            `<%= weeklyCustomers[3] %>`, 
-            `<%= weeklyCustomers[4] %>`, 
-            `<%= weeklyCustomers[5] %>`, 
+            `<%= weeklyCustomers[0] %>`,
+            `<%= weeklyCustomers[1] %>`,
+            `<%= weeklyCustomers[2] %>`,
+            `<%= weeklyCustomers[3] %>`,
+            `<%= weeklyCustomers[4] %>`,
+            `<%= weeklyCustomers[5] %>`,
             `<%= weeklyCustomers[6] %>`
         ];
 
@@ -406,7 +419,7 @@
             const past7Days = new Date();
             past7Days.setDate(past7Days.getDate() - 6);
             const fromDate = past7Days.toISOString().split('T')[0];
-            
+
             document.getElementById('salesFromDate').value = fromDate;
             document.getElementById('salesToDate').value = today;
             document.getElementById('orderFromDate').value = fromDate;
@@ -416,17 +429,17 @@
         function updateClock() {
             const now = new Date();
             const hours = now.getHours();
-            
-            let greet = (hours < 12) ? "Good Morning, <%= adminName %>! ☀️" : 
-                        (hours < 17) ? "Good Afternoon, <%= adminName %>! ☕" : 
+
+            let greet = (hours < 12) ? "Good Morning, <%= adminName %>! ☀️" :
+                        (hours < 17) ? "Good Afternoon, <%= adminName %>! ☕" :
                         "Good Evening, <%= adminName %>! 🌙";
-            
+
             document.getElementById('greeting').innerText = greet;
 
             const dateOptions = { weekday: 'long', day: '2-digit', month: 'short' };
             document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', dateOptions);
             document.getElementById('live-time').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-            
+
             setTimeout(updateClock, 1000);
         }
 
@@ -462,7 +475,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
+                    plugins: {
                         legend: { display: false },
                         tooltip: {
                             padding: 12,
@@ -475,7 +488,7 @@
                                 afterLabel: function(context) {
                                     let index = context.dataIndex;
                                     let dataStr = filteredLabels ? "Filtered Sales View" : customerDataList[index];
-                                    
+
                                     if(dataStr && dataStr !== "No Orders" && !filteredLabels) {
                                         let linesArray = dataStr.split('|');
                                         return linesArray.map((item, idx) => {
@@ -572,7 +585,7 @@
             }
 
             if(labelsArray.length > 15) { alert("Kindly select a maximum of 15 days range!"); return; }
-            
+
             initSalesValueChart(labelsArray, randomSalesData);
         }
 

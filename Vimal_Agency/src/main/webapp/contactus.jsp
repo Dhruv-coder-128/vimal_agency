@@ -6,7 +6,7 @@
     // STRICT USER SESSION CHECK
     if (session.getAttribute("user_id") == null && session.getAttribute("uid") == null && session.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?msg=auth_required");
-        return; 
+        return;
     }
 %>
 
@@ -36,29 +36,29 @@
 
         .contact-hero {
             background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
-            padding: 80px 0 150px 0;
+            padding: clamp(40px, 8vw, 80px) 0 clamp(80px, 12vw, 130px) 0;
             color: white;
             text-align: center;
         }
 
         .contact-container-wrapper {
-            margin-top: -100px;
-            padding-bottom: 80px;
+            margin-top: clamp(-60px, -8vw, -90px);
+            padding-bottom: 60px;
         }
 
         .info-card-modern {
             background: white;
-            border-radius: 24px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: clamp(20px, 4vw, 30px);
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
             transition: 0.3s;
             height: 100%;
             border-bottom: 4px solid transparent;
         }
 
         .info-card-modern:hover {
-            transform: translateY(-10px);
+            transform: translateY(-6px);
             border-bottom: 4px solid var(--gold);
         }
 
@@ -157,11 +157,11 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
         st.setString(2, email);
         st.setString(3, cno);
         st.setString(4, message);
-        if (st.executeUpdate() > 0) { 
-            success = "1"; 
+        if (st.executeUpdate() > 0) {
+            success = "1";
         }
-    } catch (Exception e) { 
-        out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>"); 
+    } catch (Exception e) {
+        out.println("<div class='alert alert-danger'>Error: " + e.getMessage() + "</div>");
     }
 }
 
@@ -230,12 +230,12 @@ String curEmail = (session.getAttribute("user_email") != null) ? session.getAttr
                             <button type="submit" class="btn-send">Send Message <i class="fa-solid fa-paper-plane ms-2"></i></button>
                         </form>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <h3 class="fw-800 mb-4">Our Location</h3>
                         <div class="rounded-4 overflow-hidden shadow-sm" style="height: 300px; background: #eee;">
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.9612345678!2d70.45!3d21.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDMxJzEyLjAiTiA3MMKwMjcnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890" 
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3711.9612345678!2d70.45!3d21.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDMxJzEyLjAiTiA3MMKwMjcnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
                                 width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
                             </iframe>
                         </div>
@@ -256,7 +256,7 @@ String curEmail = (session.getAttribute("user_email") != null) ? session.getAttr
 function showSuccessToast() {
     const toast = document.getElementById("toast");
     toast.classList.add("active");
-    setTimeout(() => { 
+    setTimeout(() => {
         toast.classList.remove("active");
         setTimeout(() => { window.location="index.jsp"; }, 600);
     }, 3000);

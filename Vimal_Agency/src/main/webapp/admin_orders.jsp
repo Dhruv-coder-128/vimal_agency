@@ -6,7 +6,7 @@
     // STEP 1: STRICT ADMIN SESSION LOCKDOWN
     if (session.getAttribute("admin_id") == null) {
         response.sendRedirect("admin_login.jsp?msg=admin_auth_required");
-        return; 
+        return;
     }
 
     // AJAX HANDLE
@@ -20,42 +20,58 @@
                 ps.setString(1, request.getParameter("new_status"));
                 ps.setInt(2, oId);
                 int rows = ps.executeUpdate();
-                
+
                 if (rows > 0) {
                     out.print("{\"status\":\"success\", \"message\":\"Order #" + request.getParameter("order_id") + " status changed to " + request.getParameter("new_status") + " successfully!\"}");
                 } else {
                     out.print("{\"status\":\"error\", \"message\":\"Failed to update database.\"}");
                 }
             }
-        } catch (Exception e) { 
-            out.print("{\"status\":\"error\", \"message\":\"" + e.getMessage() + "\"}"); 
+        } catch (Exception e) {
+            out.print("{\"status\":\"error\", \"message\":\"" + e.getMessage() + "\"}");
         }
         out.flush();
-        return; 
+        return;
     }
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Orders | Vimal Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .admin-main { margin-left: 260px; padding: 35px; background: #f8f9fa; min-height: 100vh; }
+        .admin-main {
+            margin-left: 0;
+            padding: clamp(15px, 3vw, 35px);
+            background: #f8f9fa;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .admin-main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
+        }
+
         .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 13px; display: inline-block; width: 95px; text-align: center; }
         .status-pending { background: #fff3cd; color: #856404; }
         .status-delivered { background: #d4edda; color: #155724; }
         .status-cancelled { background: #f8d7da; color: #721c24; }
-        
+
         .toast-container-header {
-            position: fixed; 
-            top: 30px; 
-            left: 50%; 
+            position: fixed;
+            top: 20px;
+            left: 50%;
             transform: translateX(-50%);
-            z-index: 9999; 
-            width: auto; 
-            min-width: 400px;
+            z-index: 9999;
+            width: max-content;
+            max-width: min(92vw, 500px);
         }
         .custom-toast {
             background: #ffffff !important;
@@ -71,13 +87,13 @@
         .toast-border-pending { border-left: 8px solid #ffc107 !important; }
         .toast-border-delivered { border-left: 8px solid #28a745 !important; }
         .toast-border-cancelled { border-left: 8px solid #dc3545 !important; }
-        
+
         .toast-icon-box {
-            width: 42px; height: 42px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             font-size: 18px; margin-right: 15px; flex-shrink: 0;
         }
-        
+
         .filter-btn.active { background-color: #ffc800 !important; color: #000 !important; border-color: #ffc800 !important; font-weight: bold; }
         .search-box { max-width: 350px; border-radius: 20px; padding-left: 40px; }
         .search-icon { position: absolute; left: 15px; top: 10px; color: #a0aec0; }
@@ -147,7 +163,7 @@
                                     String decimalPart = doubleStr.substring(doubleStr.indexOf("."));
                                     String str = String.valueOf(amountInt);
                                     String formattedAmount = "";
-                                    
+
                                     if (str.length() > 3) {
                                         String lastThree = str.substring(str.length() - 3);
                                         String remaining = str.substring(0, str.length() - 3);
@@ -256,7 +272,7 @@
                 if(data.status === "success") {
                     let badge = document.getElementById("badge-" + orderId);
                     let row = badge.closest("tr");
-                    
+
                     row.setAttribute("data-status", newStatus);
                     badge.classList.remove("status-pending", "status-delivered", "status-cancelled");
                     badge.innerText = newStatus;
@@ -270,10 +286,10 @@
                     let iconBox = document.getElementById('toastIconBox');
                     let icon = document.getElementById('toastIcon');
                     let title = document.getElementById('toastTitle');
-                    
+
                     toastElement.classList.remove("toast-border-pending", "toast-border-delivered", "toast-border-cancelled");
-                    iconBox.className = "toast-icon-box"; 
-                    icon.className = "fa-solid"; 
+                    iconBox.className = "toast-icon-box";
+                    icon.className = "fa-solid";
 
                     if(checkStatus === "delivered") {
                         toastElement.classList.add("toast-border-delivered");

@@ -3,7 +3,7 @@
     // Session mathi user details remove karo
     session.removeAttribute("username");
     session.removeAttribute("user_id");
-    
+
     // Session ne completely destroy karo
     session.invalidate();
 

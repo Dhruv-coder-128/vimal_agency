@@ -27,7 +27,7 @@ if(request.getMethod().equalsIgnoreCase("POST")){
                             session.setAttribute("username", rs.getString("username"));
                             session.setAttribute("role", "admin");
 
-                            response.sendRedirect("admin_index.jsp"); 
+                            response.sendRedirect("admin_index.jsp");
                             return;
                         } else {
                             error = "Access Denied: Administrative privileges required.";
@@ -48,6 +48,7 @@ if(request.getMethod().equalsIgnoreCase("POST")){
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vimal Admin - Secure Login</title>
     <link rel='stylesheet' type='text/css' href='main.css'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -58,7 +59,7 @@ if(request.getMethod().equalsIgnoreCase("POST")){
 
 <div class="login-container">
     <div class="logo-box">
-        <img src="./Product/login/logo.jpeg" alt="Logo"> 
+        <img src="./Product/login/logo.jpeg" alt="Logo">
     </div>
 
     <p class="welcome-text" style="color: #1a242f; font-weight: 800; margin-bottom: 20px;">ADMIN SECURE LOGIN</p>

@@ -10,18 +10,28 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products Inventory | Vimal Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .admin-main {
-            margin-left: 260px;
-            padding: 35px;
+            margin-left: 0;
+            padding: clamp(15px, 3vw, 35px);
             background: #f8f9fa;
             min-height: 100vh;
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .admin-main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
         }
 
         .btn-action {
@@ -75,8 +85,8 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 2000;
-            width: 100%;
-            max-width: 600px;
+            width: max-content;
+            max-width: min(92vw, 550px);
         }
 
         .toast-success-header {
@@ -100,9 +110,9 @@
     <%@ include file="admin_header.jsp" %>
 
     <div class="admin-main">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
             <div>
-                <h1 style="font-weight: 800; color: #1a242f; margin: 0; letter-spacing: -1px;">Products Inventory</h1>
+                <h1 style="font-weight: 800; color: #1a242f; margin: 0; letter-spacing: -1px; font-size: clamp(1.5rem, 3vw, 2rem);">Products Inventory</h1>
                 <p style="color: #7f8c8d; margin: 0;">Manage your Vimal Agency snacks and inventory.</p>
             </div>
             <button type="button" class="btn btn-warning fw-bold px-4 py-2 text-dark"
@@ -135,9 +145,21 @@
                 // 2. INSERT LOGIC
                 if (request.getMethod().equalsIgnoreCase("POST") && request.getParameter("action_type") == null) {
                     try {
+                        request.setCharacterEncoding("UTF-8");
                         String pCode = request.getParameter("p_code");
+                        String pName = request.getParameter("p_name");
+                        String pPriceStr = request.getParameter("p_price");
+                        String pCat = request.getParameter("p_cat");
+                        String pDesc = request.getParameter("p_desc");
+                        String pImg = request.getParameter("p_img");
+
+                        int pPrice = 0;
+                        if (pPriceStr != null && !pPriceStr.trim().isEmpty()) {
+                            pPrice = (int) Math.round(Double.parseDouble(pPriceStr.trim()));
+                        }
+
                         try (PreparedStatement chk = con.prepareStatement("SELECT COUNT(*) FROM products WHERE code=?")) {
-                            chk.setString(1, pCode);
+                            chk.setString(1, pCode != null ? pCode.trim() : "");
                             try (ResultSet rsChk = chk.executeQuery()) {
                                 rsChk.next();
                                 if (rsChk.getInt(1) > 0) {
@@ -145,14 +167,14 @@
                                 } else {
                                     String sql = "INSERT INTO products (code, product_name, product_price, product_category, product_describe, product_image) VALUES (?, ?, ?, ?, ?, ?)";
                                     try (PreparedStatement ps = con.prepareStatement(sql)) {
-                                        ps.setString(1, pCode);
-                                        ps.setString(2, request.getParameter("p_name"));
-                                        ps.setInt(3, Integer.parseInt(request.getParameter("p_price")));
-                                        ps.setString(4, request.getParameter("p_cat"));
-                                        ps.setString(5, request.getParameter("p_desc"));
-                                        ps.setString(6, request.getParameter("p_img"));
+                                        ps.setString(1, pCode != null ? pCode.trim() : "");
+                                        ps.setString(2, pName != null ? pName.trim() : "");
+                                        ps.setInt(3, pPrice);
+                                        ps.setString(4, pCat != null ? pCat.trim() : "");
+                                        ps.setString(5, pDesc != null ? pDesc.trim() : "");
+                                        ps.setString(6, pImg != null ? pImg.trim() : "");
                                         ps.executeUpdate();
-                                        successMsg = request.getParameter("p_name") + " added successfully!";
+                                        successMsg = (pName != null ? pName : "Product") + " added successfully!";
                                     }
                                 }
                             }
@@ -165,12 +187,24 @@
                 // 3. UPDATE LOGIC
                 if (request.getMethod().equalsIgnoreCase("POST") && "update".equals(request.getParameter("action_type"))) {
                     try {
+                        request.setCharacterEncoding("UTF-8");
                         String pCode = request.getParameter("p_code");
+                        String pName = request.getParameter("p_name");
+                        String pPriceStr = request.getParameter("p_price");
+                        String pCat = request.getParameter("p_cat");
+                        String pDesc = request.getParameter("p_desc");
+                        String pImg = request.getParameter("p_img");
                         String listingCode = request.getParameter("listing_code");
 
+                        int pPrice = 0;
+                        if (pPriceStr != null && !pPriceStr.trim().isEmpty()) {
+                            pPrice = (int) Math.round(Double.parseDouble(pPriceStr.trim()));
+                        }
+                        int lCode = Integer.parseInt(listingCode.trim());
+
                         try (PreparedStatement chk = con.prepareStatement("SELECT COUNT(*) FROM products WHERE code = ? AND listing_code != ?")) {
-                            chk.setString(1, pCode);
-                            chk.setInt(2, Integer.parseInt(listingCode));
+                            chk.setString(1, pCode != null ? pCode.trim() : "");
+                            chk.setInt(2, lCode);
                             try (ResultSet rsChk = chk.executeQuery()) {
                                 rsChk.next();
                                 if (rsChk.getInt(1) > 0) {
@@ -178,21 +212,25 @@
                                 } else {
                                     String sql = "UPDATE products SET code=?, product_name=?, product_price=?, product_category=?, product_describe=?, product_image=? WHERE listing_code=?";
                                     try (PreparedStatement ps = con.prepareStatement(sql)) {
-                                        ps.setString(1, pCode);
-                                        ps.setString(2, request.getParameter("p_name"));
-                                        ps.setInt(3, Integer.parseInt(request.getParameter("p_price")));
-                                        ps.setString(4, request.getParameter("p_cat"));
-                                        ps.setString(5, request.getParameter("p_desc"));
-                                        ps.setString(6, request.getParameter("p_img"));
-                                        ps.setInt(7, Integer.parseInt(listingCode));
-                                        ps.executeUpdate();
-                                        successMsg = request.getParameter("p_name") + " updated successfully!";
+                                        ps.setString(1, pCode != null ? pCode.trim() : "");
+                                        ps.setString(2, pName != null ? pName.trim() : "");
+                                        ps.setInt(3, pPrice);
+                                        ps.setString(4, pCat != null ? pCat.trim() : "");
+                                        ps.setString(5, pDesc != null ? pDesc.trim() : "");
+                                        ps.setString(6, pImg != null ? pImg.trim() : "");
+                                        ps.setInt(7, lCode);
+                                        int updatedRows = ps.executeUpdate();
+                                        if (updatedRows > 0) {
+                                            successMsg = (pName != null ? pName : "Product") + " updated successfully!";
+                                        } else {
+                                            errorMsg = "Error: Product #" + lCode + " not found.";
+                                        }
                                     }
                                 }
                             }
                         }
                     } catch (Exception e) {
-                        errorMsg = "Error: " + e.getMessage();
+                        errorMsg = "Error updating product: " + e.getMessage();
                     }
                 }
             } catch (Exception e) {
@@ -202,74 +240,93 @@
 
         <div class="stat-card p-0 overflow-hidden"
             style="background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border-top: 5px solid #ffc800;">
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background: #f8f9fa;">
-                    <tr>
-                        <th class="ps-4 py-3">ID</th>
-                        <th>Code</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <%
-                        if (con != null) {
-                            try (Statement st = con.createStatement();
-                                 ResultSet rs = st.executeQuery("SELECT * FROM products ORDER BY listing_code ASC")) {
-                                while (rs.next()) {
-                                    int lCode = rs.getInt("listing_code");
-                                    String code = rs.getString("code");
-                                    String pName = rs.getString("product_name");
-                                    double price = rs.getDouble("product_price");
-                                    String cat = rs.getString("product_category");
-                                    String img = rs.getString("product_image");
-                                    String desc = rs.getString("product_describe");
-                                    String safeName = (pName != null) ? pName.replace("'", "\\'").replace("\"", "&quot;") : "";
-                                    String safeDesc = (desc != null) ? desc.replace("'", "\\'").replace("\n", " ").replace("\r", "") : "";
-                    %>
-                    <tr style="border-bottom: 1px solid #f1f1f1;">
-                        <td class="ps-4 fw-bold">#<%= lCode %></td>
-                        <td><span class="badge bg-secondary"><%= (code != null ? code : "N/A") %></span></td>
-                        <td><img src="<%= (img != null ? img : "") %>" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; border: 1px solid #eee; background: #fff;"></td>
-                        <td class="fw-bold"><%= (pName != null ? pName : "") %></td>
-                        <td><span class="badge bg-light text-dark border px-3 py-2"><%= (cat != null ? cat : "") %></span></td>
-                        <td class="text-success fw-bold">₹ <%= price %></td>
-                        <td class="text-center">
-                            <!-- VIEW BUTTON -->
-                            <button type="button" class="btn-action btn-view me-2"
-                                data-bs-toggle="modal"
-                                data-bs-target="#viewProductModal"
-                                onclick="fillViewModal('<%= lCode %>', '<%= (code != null ? code : "") %>', '<%= safeName %>', '<%= price %>', '<%= (cat != null ? cat : "") %>', '<%= (img != null ? img : "") %>', '<%= safeDesc %>')">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                            <!-- EDIT BUTTON -->
-                            <button type="button" class="btn-action btn-edit me-2"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editProductModal"
-                                onclick="fillEditModal('<%= lCode %>', '<%= (code != null ? code : "") %>', '<%= safeName %>', '<%= price %>', '<%= (cat != null ? cat : "") %>', '<%= (img != null ? img : "") %>', '<%= safeDesc %>')">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <!-- DELETE BUTTON -->
-                            <a href="admin_products.jsp?action=delete&id=<%= lCode %>" class="btn-action btn-delete"
-                                onclick="return confirm('Security Check: Delete this snack?')">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <%
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background: #f8f9fa;">
+                        <tr>
+                            <th class="ps-4 py-3">ID</th>
+                            <th>Code</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%
+                            if (con != null) {
+                                try (Statement st = con.createStatement();
+                                     ResultSet rs = st.executeQuery("SELECT * FROM products ORDER BY listing_code ASC")) {
+                                    while (rs.next()) {
+                                        int lCode = rs.getInt("listing_code");
+                                        String code = rs.getString("code");
+                                        String pName = rs.getString("product_name");
+                                        int price = rs.getInt("product_price");
+                                        String cat = rs.getString("product_category");
+                                        String img = rs.getString("product_image");
+                                        String desc = rs.getString("product_describe");
+                                        String safeName = (pName != null) ? pName.replace("\"", "&quot;") : "";
+                                        String safeDesc = (desc != null) ? desc.replace("\"", "&quot;") : "";
+                        %>
+                        <tr style="border-bottom: 1px solid #f1f1f1;">
+                            <td class="ps-4 fw-bold">#<%= lCode %></td>
+                            <td><span class="badge bg-secondary"><%= (code != null ? code : "N/A") %></span></td>
+                            <td><img src="<%= (img != null ? img : "") %>" alt="Product" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; border: 1px solid #eee; background: #fff;"></td>
+                            <td class="fw-bold"><%= (pName != null ? pName : "") %></td>
+                            <td><span class="badge bg-light text-dark border px-3 py-2"><%= (cat != null ? cat : "") %></span></td>
+                            <td class="text-success fw-bold">₹ <%= price %></td>
+                            <td class="text-center text-nowrap">
+                                <!-- VIEW BUTTON -->
+                                <button type="button" class="btn-action btn-view me-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#viewProductModal"
+                                    data-id="<%= lCode %>"
+                                    data-code="<%= (code != null ? code : "") %>"
+                                    data-name="<%= safeName %>"
+                                    data-price="<%= price %>"
+                                    data-cat="<%= (cat != null ? cat : "") %>"
+                                    data-img="<%= (img != null ? img : "") %>"
+                                    data-desc="<%= safeDesc %>"
+                                    onclick="handleViewClick(this)"
+                                    aria-label="View Product Details">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <!-- EDIT BUTTON -->
+                                <button type="button" class="btn-action btn-edit me-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editProductModal"
+                                    data-id="<%= lCode %>"
+                                    data-code="<%= (code != null ? code : "") %>"
+                                    data-name="<%= safeName %>"
+                                    data-price="<%= price %>"
+                                    data-cat="<%= (cat != null ? cat : "") %>"
+                                    data-img="<%= (img != null ? img : "") %>"
+                                    data-desc="<%= safeDesc %>"
+                                    onclick="handleEditClick(this)"
+                                    aria-label="Edit Product">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <!-- DELETE BUTTON -->
+                                <a href="admin_products.jsp?action=delete&id=<%= lCode %>" class="btn-action btn-delete"
+                                    onclick="return confirm('Security Check: Delete this snack?')"
+                                    aria-label="Delete Product">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <%
+                                    }
+                                } catch (Exception e) {
+                                    out.println("<tr><td colspan='7' class='text-danger text-center'>Error loading products: " + e.getMessage() + "</td></tr>");
+                                } finally {
+                                    try { con.close(); } catch (Exception ignored) {}
                                 }
-                            } catch (Exception e) {
-                                out.println("<tr><td colspan='7' class='text-danger text-center'>Error loading products: " + e.getMessage() + "</td></tr>");
-                            } finally {
-                                try { con.close(); } catch (Exception ignored) {}
                             }
-                        }
-                    %>
-                </tbody>
-            </table>
+                        %>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -289,7 +346,7 @@
                             <div class="col-md-6"><label class="fw-bold">Name</label><input
                                     type="text" name="p_name" class="form-control" placeholder="Product Name" required></div>
                             <div class="col-md-6"><label class="fw-bold">Price (₹)</label><input
-                                    type="number" name="p_price" class="form-control" required></div>
+                                    type="number" step="1" min="0" name="p_price" class="form-control" required></div>
                             <div class="col-md-6">
                                 <label class="fw-bold">Category</label>
                                 <select name="p_cat" class="form-select" required>
@@ -338,7 +395,7 @@
                             <div class="col-md-6"><label class="fw-bold">Product Name</label><input
                                     type="text" name="p_name" id="edit_name" class="form-control shadow-none" required></div>
                             <div class="col-md-6"><label class="fw-bold">Price (₹)</label><input
-                                    type="number" name="p_price" id="edit_price" class="form-control shadow-none" required></div>
+                                    type="number" step="1" min="0" name="p_price" id="edit_price" class="form-control shadow-none" required></div>
                             <div class="col-md-6">
                                 <label class="fw-bold">Category</label>
                                 <select name="p_cat" id="edit_cat" class="form-select shadow-none" required>
@@ -446,23 +503,25 @@
     </div>
 
     <script>
-        function fillEditModal(id, code, name, price, cat, img, desc) {
-            document.getElementById('edit_listing_code').value = id;
-            document.getElementById('edit_code').value = code;
-            document.getElementById('edit_name').value = name;
-            document.getElementById('edit_price').value = price;
-            document.getElementById('edit_cat').value = cat;
-            document.getElementById('edit_img').value = img;
-            document.getElementById('edit_desc').value = desc;
+        function handleEditClick(btn) {
+            document.getElementById('edit_listing_code').value = btn.getAttribute('data-id') || '';
+            document.getElementById('edit_code').value = btn.getAttribute('data-code') || '';
+            document.getElementById('edit_name').value = btn.getAttribute('data-name') || '';
+            document.getElementById('edit_price').value = btn.getAttribute('data-price') || '0';
+            document.getElementById('edit_cat').value = btn.getAttribute('data-cat') || 'Wafers';
+            document.getElementById('edit_img').value = btn.getAttribute('data-img') || '';
+            document.getElementById('edit_desc').value = btn.getAttribute('data-desc') || '';
         }
 
-        function fillViewModal(id, code, name, price, cat, img, desc) {
-            document.getElementById('view_listing_code').innerText = "#" + id;
+        function handleViewClick(btn) {
+            var code = btn.getAttribute('data-code');
+            var desc = btn.getAttribute('data-desc');
+            document.getElementById('view_listing_code').innerText = "#" + (btn.getAttribute('data-id') || '');
             document.getElementById('view_code').innerText = (code && code !== 'null' && code !== '') ? code : 'N/A';
-            document.getElementById('view_name').innerText = name;
-            document.getElementById('view_price').innerText = parseFloat(price).toFixed(2);
-            document.getElementById('view_cat').innerText = cat;
-            document.getElementById('view_img').src = img;
+            document.getElementById('view_name').innerText = btn.getAttribute('data-name') || '';
+            document.getElementById('view_price').innerText = btn.getAttribute('data-price') || '0';
+            document.getElementById('view_cat').innerText = btn.getAttribute('data-cat') || '';
+            document.getElementById('view_img').src = btn.getAttribute('data-img') || '';
 
             if (desc && desc.trim() !== 'null' && desc.trim() !== '') {
                 document.getElementById('view_desc').innerText = desc;
@@ -488,7 +547,7 @@
                 document.getElementById('toastIconBg').className = "bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-4";
                 document.getElementById('toastIcon').className = "fa-solid fa-triangle-exclamation fa-lg";
                 document.getElementById('toastTitle').className = "d-block text-danger";
-                document.getElementById('toastTitle').innerText = "Duplicate Error";
+                document.getElementById('toastTitle').innerText = "Error";
                 document.getElementById('toastMsg').innerText = "<%= errorMsg %>";
                 var myToast = new bootstrap.Toast(toast, { delay: 4500 });
                 myToast.show();

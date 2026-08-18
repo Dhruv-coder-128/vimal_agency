@@ -16,17 +16,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Vimal Agency</title>
-    
+
     <!-- External CSS Libraries -->
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Bootstrap 5 CSS Framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Google Font (Outfit) -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+
     <!-- Animate.css for Animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
@@ -54,70 +54,71 @@
            Glassmorphism + Background Image
         ============================== */
         .hero-section {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(51, 65, 85, 0.8)), 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(51, 65, 85, 0.8)),
                         url('https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1500&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            height: 450px;
+            min-height: 320px;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             text-align: center;
-            clip-path: ellipse(150% 100% at 50% 0%); /* Curved Bottom Shape */
+            padding: clamp(40px, 8vw, 80px) 15px clamp(70px, 10vw, 110px);
+            clip-path: ellipse(150% 100% at 50% 0%);
         }
 
         /* ==============================
            STATS COUNTER SECTION
         ============================== */
         .stats-wrapper {
-            margin-top: -100px; /* Pull section upward over hero */
+            margin-top: clamp(-50px, -8vw, -80px);
             position: relative;
-            z-index: 100;       /* Keep above hero section */
+            z-index: 100;
         }
 
         .stat-card {
             background: white;
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            padding: clamp(18px, 3vw, 30px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
             text-align: center;
             border-bottom: 5px solid var(--gold);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.3s ease;
         }
 
-        /* Hover Animation Effect */
-        .stat-card:hover { 
-            transform: translateY(-12px); 
+        .stat-card:hover {
+            transform: translateY(-8px);
         }
 
-        .stat-number { 
-            font-size: 2.5rem; 
-            font-weight: 800; 
-            color: var(--dark); 
-            display: block; 
+        .stat-number {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            color: var(--dark);
+            display: block;
         }
 
-        .stat-label { 
-            color: #64748b; 
-            font-weight: 500; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            font-size: 0.85rem; 
+        .stat-label {
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
         }
 
         /* ==============================
            INFORMATION GRID SECTION
         ============================== */
-        .info-grid { 
-            padding: 80px 0; 
+        .info-grid {
+            padding: clamp(40px, 6vw, 80px) 0;
         }
 
         /* Modern Card Styling */
         .modern-table-card {
             background: #ffffff;
-            border-radius: 30px;
-            padding: 40px;
+            border-radius: 20px;
+            padding: clamp(20px, 4vw, 40px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
         }
 
@@ -139,31 +140,31 @@
 
         /* Small Icon Box */
         .icon-small {
-            width: 40px; 
+            width: 40px;
             height: 40px;
             background: rgba(255, 200, 0, 0.1);
             color: var(--gold);
             border-radius: 10px;
             display: flex;
-            align-items: center; 
+            align-items: center;
             justify-content: center;
             font-size: 1.1rem;
         }
 
-        .item-label { 
-            color: #64748b; 
-            font-size: 0.75rem; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            font-weight: 600; 
-            margin-bottom: 0; 
+        .item-label {
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 0;
         }
 
-        .item-val { 
-            color: var(--dark); 
-            font-weight: 700; 
-            font-size: 0.95rem; 
-            margin: 0; 
+        .item-val {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin: 0;
         }
 
         /* ==============================
@@ -193,17 +194,17 @@
             border-color: var(--gold);
         }
 
-        .reach-num { 
-            font-size: 2.2rem; 
-            font-weight: 800; 
-            color: var(--gold); 
-            margin-bottom: 5px; 
+        .reach-num {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 5px;
         }
 
-        .reach-txt { 
-            color: #64748b; 
-            font-weight: 600; 
-            font-size: 0.85rem; 
+        .reach-txt {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
         /* ==============================
@@ -223,14 +224,14 @@
         }
 
         /* Dark Hover Effect */
-        .team-card-modern:hover { 
-            background: var(--dark); 
-            color: white; 
+        .team-card-modern:hover {
+            background: var(--dark);
+            color: white;
         }
 
-        .team-card-modern:hover .badge { 
-            background: var(--gold) !important; 
-            color: var(--dark) !important; 
+        .team-card-modern:hover .badge {
+            background: var(--gold) !important;
+            color: var(--dark) !important;
         }
 
         /* ==============================
@@ -317,26 +318,26 @@
             <div class="col-lg-7">
                 <h2 class="fw-800 mb-4 animate__animated animate__fadeInLeft">Our Story</h2>
                 <p class="text-secondary fs-5 mb-5" style="line-height: 1.8;">
-                    Started as a vision in 1987, Vimal Agency has evolved into a premier FMCG distributor. 
-                    As the <strong>first-ever distributor for Balaji Wafers</strong>, we take pride in our 
+                    Started as a vision in 1987, Vimal Agency has evolved into a premier FMCG distributor.
+                    As the <strong>first-ever distributor for Balaji Wafers</strong>, we take pride in our
                     unwavering commitment to quality and a network that spans across Junagadh.
                 </p>
 
                 <div class="reach-container mb-5 animate__animated animate__fadeInUp" style="border-left: 8px solid var(--gold);">
                     <h2 class="fw-800 mb-4" style="color: var(--dark);">The Triumph</h2>
                     <p class="text-dark" style="line-height: 1.7; text-align: justify; font-size: 0.95rem;">
-                        In 1987, <strong>Mr. Hareshbhai Sanghavi</strong> embarked on a visionary journey by meeting Mr. Chandubhai Virani, the founder of Balaji Wafers. 
-                        He started the business with a humble investment, purchasing his first stock worth only <strong>₹240</strong>. 
+                        In 1987, <strong>Mr. Hareshbhai Sanghavi</strong> embarked on a visionary journey by meeting Mr. Chandubhai Virani, the founder of Balaji Wafers.
+                        He started the business with a humble investment, purchasing his first stock worth only <strong>₹240</strong>.
                     </p>
-                    
+
                     <div class="p-3 my-4 rounded-3" style="background: rgba(255, 200, 0, 0.1); border: 1px dashed var(--gold);">
                         <i class="fa-solid fa-chart-line me-2 text-warning"></i>
-                        <span class="fw-bold">A Historical Milestone:</span> 
+                        <span class="fw-bold">A Historical Milestone:</span>
                         Through decades of dedication, Vimal Agency once achieved a staggering <strong>25% share of the total yearly turnover of Balaji Wafers</strong>.
                     </div>
 
                     <p class="text-dark mb-0" style="line-height: 1.7; font-size: 0.95rem;">
-                        Today, Hareshbhai is celebrated as the <strong>1st Dealer</strong> in Balaji Wafers' history. 
+                        Today, Hareshbhai is celebrated as the <strong>1st Dealer</strong> in Balaji Wafers' history.
                         Even Chandubhai Virani now acknowledges that Hareshbhai’s vision for the market was absolutely correct.
                     </p>
                 </div>
@@ -421,7 +422,7 @@
         </div>
     </div>
 
-    <%@ include file="footer.jsp" %>   
+    <%@ include file="footer.jsp" %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

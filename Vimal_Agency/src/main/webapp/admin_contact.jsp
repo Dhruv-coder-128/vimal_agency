@@ -31,9 +31,11 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Leads | Vimal Admin</title>
 
     <!-- Bootstrap 5 CSS -->
@@ -44,9 +46,18 @@
 
     <style>
         .admin-main {
-            margin-left: 260px;
+            margin-left: 0;
+            padding: clamp(15px, 3vw, 35px);
             min-height: 100vh;
             background: #f8f9fa;
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .admin-main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
         }
 
         .table td,

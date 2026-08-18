@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Cart | Vimal Agency</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,108 +28,156 @@
         }
 
         .cart-header {
-            padding: 40px 0;
+            padding: clamp(30px, 6vw, 50px) 0;
             background: linear-gradient(to right, var(--primary-dark), #1e293b);
             color: white;
-            border-radius: 0 0 50px 50px;
-            margin-bottom: -50px;
+            border-radius: 0 0 clamp(25px, 5vw, 50px) clamp(25px, 5vw, 50px);
+            margin-bottom: -40px;
         }
+        .cart-header h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
 
         .premium-wrapper {
             display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 25px;
             padding-top: 20px;
+        }
+
+        @media (min-width: 992px) {
+            .premium-wrapper {
+                grid-template-columns: 1fr 380px;
+                gap: 30px;
+            }
         }
 
         .item-box {
             background: var(--premium-white);
-            border-radius: 24px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: clamp(15px, 3vw, 22px);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
             border: 1px solid rgba(0,0,0,0.05);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: 0.3s ease;
         }
         .item-box:hover {
-            transform: scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
         .img-container {
-            width: 120px; height: 120px;
+            width: 100px;
+            height: 100px;
             background: var(--soft-gray);
-            border-radius: 18px;
-            padding: 10px;
-            display: flex; align-items: center; justify-content: center;
+            border-radius: 14px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
         .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .item-details {
+            flex: 1 1 200px;
+            min-width: 180px;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .item-actions {
+                width: auto;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: center;
+            }
+        }
 
         .qty-switch {
             display: inline-flex;
             align-items: center;
             background: var(--soft-gray);
             border-radius: 50px;
-            padding: 5px;
+            padding: 4px;
         }
         .q-btn {
-            width: 32px; height: 32px;
+            width: 34px; height: 34px;
             border-radius: 50%;
             border: none;
             background: white;
             font-weight: 800;
+            cursor: pointer;
             transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .q-btn:hover { background: var(--accent-gold); }
 
         .summary-glass {
             background: var(--premium-white);
-            border-radius: 30px;
-            padding: 35px;
-            position: sticky; top: 30px;
+            border-radius: 24px;
+            padding: clamp(20px, 4vw, 35px);
+            position: relative;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
         }
 
-        .line-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 500; color: #64748b; }
+        @media (min-width: 992px) {
+            .summary-glass {
+                position: sticky;
+                top: 90px;
+            }
+        }
+
+        .line-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 500; color: #64748b; font-size: 15px; }
         .grand-total {
-            margin-top: 25px;
-            padding-top: 20px;
+            margin-top: 20px;
+            padding-top: 15px;
             border-top: 2px dashed #e2e8f0;
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
             font-weight: 800;
             color: var(--primary-dark);
         }
 
         .btn-checkout {
             width: 100%;
+            min-height: 50px;
             background: var(--primary-dark);
             color: white;
-            padding: 18px;
-            border-radius: 18px;
+            padding: 14px;
+            border-radius: 14px;
             font-weight: 700;
             border: none;
-            margin-top: 25px;
-            transition: 0.4s;
-            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+            margin-top: 20px;
+            transition: 0.3s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-checkout:hover {
             background: var(--accent-gold);
             color: var(--primary-dark);
-            transform: translateY(-5px);
+            transform: translateY(-2px);
         }
 
         .promo-pill {
             background: #fffdf5;
-            border: 2px dashed var(--accent-gold);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 25px;
-        }
-
-        @media (max-width: 992px) {
-            .premium-wrapper { grid-template-columns: 1fr; }
+            border: 1.5px dashed var(--accent-gold);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -192,7 +240,7 @@
                     </button>
                 </div>
             </div>
-            <% 
+            <%
                             }
                         }
                     }
@@ -205,7 +253,7 @@
                         }
                     }
                 } catch(Exception ignored) {}
-                
+
                 if(empty) {
             %>
             <div class="item-box justify-content-center py-5">
@@ -221,7 +269,7 @@
         <div class="summary-column animate__animated animate__fadeInRight">
             <div class="summary-glass">
                 <h4 class="fw-800 mb-4">Order Summary</h4>
-                
+
                 <div class="promo-pill">
                     <label class="small fw-800 text-muted mb-2 text-uppercase">Promo Code</label>
                     <div class="input-group">
@@ -236,7 +284,7 @@
                 <% } %>
                 <% int ship = (subtotal > 0 && subtotal < 1000) ? 100 : 0; %>
                 <div class="line-item"><span>Shipping</span><span><%= (ship == 0 && !empty) ? "FREE" : "&#8377; "+ship %></span></div>
-                
+
                 <div class="grand-total d-flex justify-content-between align-items-center">
                     <span>Total</span>
                     <span>&#8377; <%= (int)(subtotal + ship - discount) %></span>
@@ -269,17 +317,17 @@
         if(<%= empty %>) {
             return alert("Cart is empty");
         }
-        
+
         let subtotal = "<%= subtotal %>";
         let discount = "<%= (int)discount %>";
         let shipping = "<%= (subtotal > 0 && subtotal < 1000) ? 100 : 0 %>";
         let finalTotal = "<%= (int)(subtotal + ((subtotal > 0 && subtotal < 1000) ? 100 : 0) - discount) %>";
-        
-        let url = "checkout.jsp?subtotal=" + subtotal + 
-                  "&discount=" + discount + 
-                  "&shipping=" + shipping + 
+
+        let url = "checkout.jsp?subtotal=" + subtotal +
+                  "&discount=" + discount +
+                  "&shipping=" + shipping +
                   "&final_total=" + finalTotal;
-                  
+
         window.location.href = url;
     }
 </script>
