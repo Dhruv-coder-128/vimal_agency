@@ -475,6 +475,7 @@
 
                         <div id="userMenu" class="user-dropdown-content">
                             <a href="my_orders.jsp"><i class="fa-solid fa-box-open text-primary"></i> My Orders</a>
+                            <a href="settings.jsp"><i class="fa-solid fa-gear text-warning"></i> Settings</a>
                             <div style="height:1px; background:#e2e8f0; margin:4px 0;"></div>
                             <a href="logout.jsp" class="dropdown-logout-btn">
                                 <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -561,6 +562,9 @@
             <% if(headerUname != null) { %>
                 <a href="my_orders.jsp" class="mobile-nav-link <%= pageName.equals("my_orders.jsp") ? "active" : "" %>">
                     <i class="fa-solid fa-box-open" style="width:20px;"></i> My Orders
+                </a>
+                <a href="settings.jsp" class="mobile-nav-link <%= pageName.equals("settings.jsp") ? "active" : "" %>">
+                    <i class="fa-solid fa-gear" style="width:20px;"></i> Settings
                 </a>
                 <div style="height:1px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
                 <a href="logout.jsp" class="mobile-nav-link" style="color:#f87171;">

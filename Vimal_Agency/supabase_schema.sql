@@ -105,8 +105,18 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) DEFAULT 'user',
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    recovery_key_hash VARCHAR(255) DEFAULT NULL,
+    recovery_key_created_at TIMESTAMP DEFAULT NULL,
+    notify_orders SMALLINT DEFAULT 1,
+    notify_promos SMALLINT DEFAULT 1
 );
+
+-- Safe Alter Table Migrations (for pre-existing databases)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS recovery_key_hash VARCHAR(255) DEFAULT NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS recovery_key_created_at TIMESTAMP DEFAULT NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS notify_orders SMALLINT DEFAULT 1;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS notify_promos SMALLINT DEFAULT 1;
 
 -- Indexes for Query Performance
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
