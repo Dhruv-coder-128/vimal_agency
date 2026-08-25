@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Strip Bar & Promo Section</title>
+
+  <!-- Lottie Player Script -->
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+  <!-- Google Fonts: Paytone One (For Bold Yellow Heading) and Zilla Slab (For Features) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Paytone+One&family=Zilla+Slab:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset Basics */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* 1. Hero Banner Image */
+    .hero-banner {
+      width: 100%;
+      max-height: 450px;
+      overflow: hidden;
+    }
+
+    .hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 2. Yellow Brand Bar Section */
+    .brand-section {
+      background-color: #f4ea00; /* Yellow */
+      padding: 15px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .brand-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 50px;
+      animation: scrollLogos 20s linear infinite;
+    }
+
+    .brand-section:hover .brand-track {
+      animation-play-state: paused;
+    }
+
+    .brand-item-img {
+      height: 45px;
+      width: auto;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .brand-item-img:hover {
+      transform: scale(1.15);
+    }
+
+    @keyframes scrollLogos {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* 3. Promo Banner Section */
+    .promo-banner-wrapper {
+      padding: 60px 20px 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+    }
+
+    .banner-container {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Dark Blue Box */
+    .banner-card {
+      background-color: #01153e; /* Original Deep Blue */
+      border-radius: 36px;
+      padding: 50px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 78%; /* Leaves space on the right for image */
+      min-height: 380px;
+      position: relative;
+    }
+
+    .banner-content {
+      width: 65%;
+      color: #ffffff;
+    }
+
+    .banner-description {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #e0e6ed;
+      font-weight: 400;
+      margin-bottom: 30px;
+    }
+
+    .banner-divider {
+      border: 0;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.15);
+      margin-bottom: 30px;
+      width: 100%;
+    }
+
+    /* Exact Font Styling like Original Image */
+    .banner-title {
+      font-family: 'Paytone One', 'Arial Black', sans-serif; /* Match Bold Original Font */
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: #ffd000; /* Rich Yellow */
+      line-height: 1.2;
+      letter-spacing: 0.3px;
+    }
+
+    /* Floating Amaize Packet & Nachos */
+    .banner-image-wrapper {
+      position: absolute;
+      right: 2%;
+      top: 52%;
+      transform: translateY(-50%);
+      width: 380px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .banner-image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.25));
+    }
+
+    /* 4. Sliding Feature Strip Section */
+    .feature-strip {
+      width: 100%;
+      background-color: #ffffff;
+      padding: 30px 0 50px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: 'Zilla Slab', Georgia, serif;
+    }
+
+    .feature-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      animation: slideText 25s linear infinite;
+    }
+
+    .feature-strip:hover .feature-track {
+      animation-play-state: paused;
+    }
+
+    .feature-item {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 70px;
+    }
+
+    .icon-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+
+    .bg-yellow { background-color: #fff2c6; }
+    .bg-peach  { background-color: #ffe8d6; }
+
+    .icon-circle lottie-player {
+      width: 55px;
+      height: 55px;
+    }
+
+    .feature-text {
+      font-size: 22px;
+      line-height: 1.1;
+      color: #1a1a1a;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    @keyframes slideText {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      .banner-card {
+        width: 100%;
+        padding: 40px 30px;
+      }
+      .banner-content {
+        width: 100%;
+      }
+      .banner-image-wrapper {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        width: 300px;
+        margin: -40px auto 0 auto;
+      }
+      .banner-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .banner-title {
+        font-size: 1.6rem;
+      }
+      .icon-circle {
+        width: 65px;
+        height: 65px;
+        margin-right: 12px;
+      }
+      .icon-circle lottie-player {
+        width: 40px;
+        height: 40px;
+      }
+      .feature-text {
+        font-size: 16px;
+      }
+      .feature-item {
+        margin-right: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Hero Banner Image -->
+  <div class="hero-banner">
+    <img src="banner.jpg" alt="Hero Banner">
+  </div>
+
+  <!-- 2. Yellow Brand Bar (Brand Logos Loop) -->
+  <div class="brand-section">
+    <div class="brand-track">
+      <!-- Original Brand Logos -->
+      <img src="image_9.avif" alt="Chataka Pataka" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_10.avif" alt="Gippi" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_11.avif" alt="Two Slices" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_12.avif" alt="Dum Bar" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_13.avif" alt="Katak Batak" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_14.avif" alt="Olee" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_15.avif" alt="Numyums" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_16.avif" alt="Snackem" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_17.avif" alt="Amaize" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_18.avif" alt="Rumbles" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_19.avif" alt="Crunchex" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_20.avif" alt="Crunchem" class="brand-item-img">
+
+      <!-- Duplicate Logos for Seamless Loop -->
+      <img src="./Balaji Brand Photos/image_9.avif" alt="Chataka Pataka" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_10.avif" alt="Gippi" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_11.avif" alt="Two Slices" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_12.avif" alt="Dum Bar" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_13.avif" alt="Katak Batak" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_14.avif" alt="Olee" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_15.avif" alt="Numyums" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_16.avif" alt="Snackem" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_17.avif" alt="Amaize" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_18.avif" alt="Rumbles" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_19.avif" alt="Crunchex" class="brand-item-img">
+      <img src="./Balaji Brand Photos/image_20.avif" alt="Crunchem" class="brand-item-img">
+    </div>
+  </div>
+
+  <!-- 3. Promo Banner Section (AMaize Banner) -->
+  <div class="promo-banner-wrapper">
+    <div class="banner-container">
+      <div class="banner-card">
+        <div class="banner-content">
+          <p class="banner-description">
+            With 16 precision touchpoints, our machines handle it all. No human hands, just seamless automation. From washing to packaging, every step is crafted efficiently to ensure each bag of Balaji Wafers is as perfect as the last.
+          </p>
+          
+          <hr class="banner-divider">
+          
+          <h2 class="banner-title">
+            No shortcuts - just cutting-edge technology at work!
+          </h2>
+        </div>
+      </div>
+
+      <!-- Floating Product Image -->
+      <div class="banner-image-wrapper">
+        <img src="./Balaji Brand Photos/nachos.webp" alt="Balaji AMaize Cheese Chilli">
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Sliding Feature Strip -->
+  <div class="feature-strip">
+    <div class="feature-track">
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Bold_Seasonings.json?v=1749542772" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Bold<br />seasonings</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Innovative_Range.json?v=1749542845" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Innovative<br />range</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Strong_Crunch_2_ed086842-fa4a-4731-aaeb-f11705078716.json?v=1749542863" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Strong<br />crunch</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-peach">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Value_Packed.json?v=1749542892" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Value<br />packed</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-peach">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Uncompromising_Quality.json?v=1749542934" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Uncompromising<br />quality</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Fully_Automated_Factories_2.json?v=1749542970" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Fully automated<br />factories</div>
+      </div>
+
+      <!-- Duplicates -->
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Bold_Seasonings.json?v=1749542772" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Bold<br />seasonings</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Innovative_Range.json?v=1749542845" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Innovative<br />range</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Strong_Crunch_2_ed086842-fa4a-4731-aaeb-f11705078716.json?v=1749542863" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Strong<br />crunch</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-peach">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Value_Packed.json?v=1749542892" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Value<br />packed</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-peach">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Uncompromising_Quality.json?v=1749542934" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Uncompromising<br />quality</div>
+      </div>
+
+      <div class="feature-item">
+        <div class="icon-circle bg-yellow">
+          <lottie-player src="https://cdn.shopify.com/s/files/1/0917/0347/6515/files/Fully_Automated_Factories_2.json?v=1749542970" background="transparent" loop autoplay></lottie-player>
+        </div>
+        <div class="feature-text">Fully automated<br />factories</div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
