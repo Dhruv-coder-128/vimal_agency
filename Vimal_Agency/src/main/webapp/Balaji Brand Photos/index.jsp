@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.vimal.utils.DatabaseManager" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
@@ -18,8 +19,7 @@
 
     Connection cnM = null;
     try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        cnM = DriverManager.getConnection("jdbc:mysql://localhost:3306/vimal_agency", "root", "");
+        cnM = DatabaseManager.getConnection();
         
         PreparedStatement psM = cnM.prepareStatement("SELECT maintenance_mode, maintenance_start, maintenance_end FROM users WHERE username = ?");
         psM.setString(1, currentSessionUser);
@@ -650,8 +650,7 @@
                 int homeUserId = (Integer) session.getAttribute("user_id");
                 Connection conHomeCredit = null;
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    conHomeCredit = DriverManager.getConnection("jdbc:mysql://localhost:3306/vimal_agency?useUnicode=yes&characterEncoding=UTF-8", "root", "");
+                    conHomeCredit = DatabaseManager.getConnection();
                     PreparedStatement psHomeCredit = conHomeCredit.prepareStatement("SELECT credit_limit, used_credit FROM users WHERE id = ?");
                     psHomeCredit.setInt(1, homeUserId);
                     ResultSet rsHomeCredit = psHomeCredit.executeQuery();
@@ -720,8 +719,7 @@
             ResultSet rsFloat = null;
             try {
                 if (cur_u_id != null) {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    conFloat = DriverManager.getConnection("jdbc:mysql://localhost:3306/vimal_agency", "root", "");
+                    conFloat = DatabaseManager.getConnection();
                     
                     psFloat = conFloat.prepareStatement("SELECT SUM(qty) FROM cart WHERE user_id = ?");
                     psFloat.setInt(1, cur_u_id);
@@ -755,9 +753,8 @@
             <div class="ticker-inner d-flex">
                 <%
                     try {
-                        Class.forName("com.mysql.cj.jdbc.Driver");
-                        Connection cn=DriverManager.getConnection("jdbc:mysql://localhost:3306/vimal_agency","root","");
-                        ResultSet rs=cn.createStatement().executeQuery("SELECT offer_text FROM offers WHERE is_active=1");
+                        Connection cn = DatabaseManager.getConnection();
+                        ResultSet rs = cn.createStatement().executeQuery("SELECT offer_text FROM offers WHERE is_active=1");
                         while(rs.next()){
                 %>
                     <span class="mx-5 fw-600 text-nowrap"><i class="fa-solid fa-star text-warning me-2"></i><%= rs.getString("offer_text") %></span>
@@ -986,8 +983,7 @@
             <div class="row g-4">
                 <%
                     try {
-                        Class.forName("com.mysql.cj.jdbc.Driver");
-                        Connection conHome = DriverManager.getConnection("jdbc:mysql://localhost:3306/vimal_agency","root","");
+                        Connection conHome = DatabaseManager.getConnection();
                         
                         String[] bestSellerNames = {"CRUNCHEX - CHILI TADKA", "FARALI CHEVDO", "ALOO SEV", "MASALA MAMRA"};
                         String[] imagePaths = {"./Product/chili_tadka.png", "./Product/farali_chevdo.jpg", "./Product/aloo_sev.webp", "./Product/masala_mamra.webp"};
